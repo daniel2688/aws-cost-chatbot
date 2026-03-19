@@ -1,0 +1,79 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CurChatLambdaPolicy",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock:InvokeAgent",
+        "bedrock:InvokeModel"
+      ],
+      "Resource": [
+        "arn:aws:bedrock:us-east-1::agent/LDJKO1JVKY",
+        "arn:aws:bedrock:us-east-1::agent-alias/LDJKO1JVKY/QJONGN6CNC"
+      ]
+    },
+    {
+      "Sid": "DynamoDBHistory",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem"
+      ],
+      "Resource": "arn:aws:dynamodb:us-east-1:*:table/cur-chat-history"
+    },
+    {
+      "Sid": "AthenaQueryExecution",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StartQueryExecution",
+        "athena:GetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:StopQueryExecution"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "S3AthenaResults",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::athena-cost-by-account-results",
+        "arn:aws:s3:::athena-cost-by-account-results/*"
+      ]
+    },
+    {
+      "Sid": "SESReportEmail",
+      "Effect": "Allow",
+      "Action": [
+        "ses:SendRawEmail",
+        "ses:SendEmail"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "OrganizationsListAccounts",
+      "Effect": "Allow",
+      "Action": [
+        "organizations:ListAccounts",
+        "organizations:DescribeAccount"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:us-east-1:*:log-group:/aws/lambda/*"
+    }
+  ]
+}

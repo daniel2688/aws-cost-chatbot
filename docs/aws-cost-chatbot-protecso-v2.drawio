@@ -1,0 +1,284 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.4">
+  <diagram id="protecso-aws-cost-chatbot-v2" name="AWS Cost Chatbot — Protecso">
+    <mxGraphModel dx="1454" dy="694" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" background="light-dark(#F8F9FA,#EEF6FF)" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="header_bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#232F3E;strokeColor=#232F3E;arcSize=4;" value="" vertex="1">
+          <mxGeometry height="70" width="2060" x="60" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="header_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=22;fontStyle=1;fontColor=#FF9900;" value="AWS Cost Chatbot — Protecso" vertex="1">
+          <mxGeometry height="70" width="600" x="90" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="header_sub" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#AAAAAA;" value="Arquitectura Serverless · Amazon Bedrock + Athena + SES · us-east-1 · v1.0.0" vertex="1">
+          <mxGeometry height="24" width="900" x="433" y="53" as="geometry" />
+        </mxCell>
+        <mxCell id="header_date" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=11;fontColor=#AAAAAA;" value="Protecso · 2026-03-18" vertex="1">
+          <mxGeometry height="70" width="400" x="1700" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lane_frontend" parent="1" style="swimlane;startSize=36;fillColor=#EBF5FB;strokeColor=#2E86C1;fontStyle=1;fontSize=12;fontColor=#1A5276;arcSize=4;rounded=1;" value="① Capa Presentación — Acceso y Autenticación" vertex="1">
+          <mxGeometry height="200" width="2060" x="60" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="lane_frontend" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.user;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Usuario" vertex="1">
+          <mxGeometry height="64" width="64" x="60" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="user_detail" parent="lane_frontend" style="text;html=1;align=center;fontSize=9;fontColor=#1A5276;whiteSpace=wrap;" value="&lt;b&gt;Equipo Protecso&lt;/b&gt;&lt;br&gt;Accede vía browser&lt;br&gt;a chat.protecso.io" vertex="1">
+          <mxGeometry height="44" width="128" x="28" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="cloudfront" parent="lane_frontend" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudfront;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="CloudFront" vertex="1">
+          <mxGeometry height="64" width="64" x="300" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cf_detail" parent="lane_frontend" style="text;html=1;align=center;fontSize=9;fontColor=#1A5276;whiteSpace=wrap;" value="&lt;b&gt;protecso-cur-chat-cdn&lt;/b&gt;&lt;br&gt;CDN global · HTTPS&lt;br&gt;Dominio: chat.protecso.io" vertex="1">
+          <mxGeometry height="44" width="144" x="260" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_frontend" parent="lane_frontend" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="S3 Frontend" vertex="1">
+          <mxGeometry height="64" width="64" x="300" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_frontend2" parent="lane_frontend" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=10;" value="S3 — SPA" vertex="1">
+          <mxGeometry height="54" width="54" x="510" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="s3f_detail" parent="lane_frontend" style="text;html=1;align=center;fontSize=9;fontColor=#1A5276;whiteSpace=wrap;" value="&lt;b&gt;protecso-aws-cost-assistan&lt;/b&gt;&lt;br&gt;index.html (SPA)&lt;br&gt;Servido por CloudFront" vertex="1">
+          <mxGeometry height="44" width="138" x="468" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="cognito" parent="lane_frontend" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cognito;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Amazon Cognito" vertex="1">
+          <mxGeometry height="64" width="64" x="760" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cog_detail" parent="lane_frontend" style="text;html=1;align=center;fontSize=9;fontColor=#1A5276;whiteSpace=wrap;" value="&lt;b&gt;protecso-cur-chat&lt;/b&gt;&lt;br&gt;Pool: us-east-1_koWyGhMTX&lt;br&gt;Flujo: USER_PASSWORD_AUTH&lt;br&gt;Retorna: JWT Bearer token" vertex="1">
+          <mxGeometry height="58" width="156" x="714" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="apigw" parent="lane_frontend" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="API Gateway" vertex="1">
+          <mxGeometry height="64" width="64" x="1060" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="apigw_detail" parent="lane_frontend" style="text;html=1;align=center;fontSize=9;fontColor=#1A5276;whiteSpace=wrap;" value="&lt;b&gt;protecso-cur-chat-api&lt;/b&gt;&lt;br&gt;POST /chat → Lambda 1&lt;br&gt;POST /send-report → Lambda 3&lt;br&gt;Auth: Cognito JWT Authorizer" vertex="1">
+          <mxGeometry height="58" width="172" x="1006" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="e_user_cf" edge="1" parent="lane_frontend" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;strokeColor=#2E86C1;fontColor=#2E86C1;fontSize=9;fontStyle=2;" target="cloudfront" value="HTTPS request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cf_s3f2" edge="1" parent="lane_frontend" source="cloudfront" style="edgeStyle=orthogonalEdgeStyle;dashed=1;rounded=1;strokeColor=#AAB7B8;fontColor=#888;fontSize=9;fontStyle=2;endArrow=open;endFill=0;" target="s3_frontend2" value="sirve index.html">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cf_cog" edge="1" parent="lane_frontend" source="cloudfront" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E86C1;fontColor=#2E86C1;fontSize=9;fontStyle=2;" target="cognito" value="login request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cog_apigw" edge="1" parent="lane_frontend" source="cognito" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#27AE60;fontColor=#1E8449;fontSize=9;fontStyle=1;" target="apigw" value="JWT token válido">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lane_chat" parent="1" style="swimlane;startSize=36;fillColor=#FEF9E7;strokeColor=#F39C12;fontStyle=1;fontSize=12;fontColor=#7D6608;arcSize=4;rounded=1;" value="② Flujo Chat — Consulta en Lenguaje Natural (POST /chat)" vertex="1">
+          <mxGeometry height="240" width="2060" x="60" y="350" as="geometry">
+            <mxRectangle height="36" width="356" x="60" y="350" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lambda1" parent="lane_chat" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Lambda 1" vertex="1">
+          <mxGeometry height="64" width="64" x="80" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l1_detail" parent="lane_chat" style="text;html=1;align=center;fontSize=9;fontColor=#7D6608;whiteSpace=wrap;" value="&lt;b&gt;protecso-cur-chat&lt;/b&gt;&lt;br&gt;Runtime: Python 3.x&lt;br&gt;Recibe mensaje del usuario&lt;br&gt;Gestiona sesión Bedrock&lt;br&gt;Invoca: bedrock-agent-runtime" vertex="1">
+          <mxGeometry height="72" width="160" x="32" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="callout_l1" parent="lane_chat" style="shape=mxgraph.misc.callout;whiteSpace=wrap;html=1;fillColor=#FFF3CD;strokeColor=#F39C12;fontSize=8;fontColor=#856404;align=center;" value="⚠️ Pendiente: mover&lt;br&gt;AGENT_ID y AGENT_ALIAS&lt;br&gt;a variables de entorno" vertex="1">
+          <mxGeometry height="60" width="160" x="220" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dynamo" parent="lane_chat" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="DynamoDB" vertex="1">
+          <mxGeometry height="64" width="64" x="480" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="dyn_detail" parent="lane_chat" style="text;html=1;align=center;fontSize=9;fontColor=#7D6608;whiteSpace=wrap;" value="&lt;b&gt;cur-chat-history&lt;/b&gt;&lt;br&gt;PK: session_id (String)&lt;br&gt;bedrock_session (String)&lt;br&gt;updated_at (ISO timestamp)&lt;br&gt;Persistencia entre turnos" vertex="1">
+          <mxGeometry height="72" width="160" x="432" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="bedrock" parent="lane_chat" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Bedrock Agent" vertex="1">
+          <mxGeometry height="64" width="64" x="820" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="bed_detail" parent="lane_chat" style="text;html=1;align=center;fontSize=9;fontColor=#7D6608;whiteSpace=wrap;" value="&lt;b&gt;protecso-cur-agent&lt;/b&gt;&lt;br&gt;Agent ID: LDJKO1JVKY&lt;br&gt;Alias prod: QJONGN6CNC&lt;br&gt;Modelo: Claude Sonnet&lt;br&gt;Orquesta el Action Group" vertex="1">
+          <mxGeometry height="72" width="164" x="770" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="lambda2" parent="lane_chat" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Lambda 2" vertex="1">
+          <mxGeometry height="64" width="64" x="1160" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l2_detail" parent="lane_chat" style="text;html=1;align=center;fontSize=9;fontColor=#7D6608;whiteSpace=wrap;" value="&lt;b&gt;cur-athena-action&lt;/b&gt;&lt;br&gt;Action Group de Bedrock&lt;br&gt;Función: get_costs_by_period(days)&lt;br&gt;Ejecuta SQL en Athena&lt;br&gt;Llama: Organizations API" vertex="1">
+          <mxGeometry height="72" width="168" x="1108" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="athena_c" parent="lane_chat" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.athena;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Athena" vertex="1">
+          <mxGeometry height="64" width="64" x="1500" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ath_c_detail" parent="lane_chat" style="text;html=1;align=center;fontSize=9;fontColor=#7D6608;whiteSpace=wrap;" value="&lt;b&gt;Database: aws_costs&lt;/b&gt;&lt;br&gt;Tabla: data&lt;br&gt;SQL sobre datos CUR&lt;br&gt;Output → S3 resultados" vertex="1">
+          <mxGeometry height="58" width="160" x="1452" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="orgs_c" parent="lane_chat" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizations;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Organizations" vertex="1">
+          <mxGeometry height="64" width="64" x="1760" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="org_c_detail" parent="lane_chat" style="text;html=1;align=center;fontSize=9;fontColor=#7D6608;whiteSpace=wrap;" value="&lt;b&gt;AWS Organizations&lt;/b&gt;&lt;br&gt;list_accounts()&lt;br&gt;Resuelve account_id&lt;br&gt;→ nombre real de cuenta" vertex="1">
+          <mxGeometry height="58" width="156" x="1714" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l1_dyn" edge="1" parent="lane_chat" source="lambda1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;endArrow=block;startArrow=block;strokeColor=#E67E22;fontColor=#7D6608;fontSize=9;fontStyle=2;" target="dynamo" value="get/put sesión">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l1_bed" edge="1" parent="lane_chat" source="lambda1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E67E22;fontColor=#7D6608;fontSize=9;fontStyle=2;" target="bedrock" value="InvokeAgent( mensaje, session_id )">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_bed_l2" edge="1" parent="lane_chat" source="bedrock" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E67E22;fontColor=#7D6608;fontSize=9;fontStyle=2;" target="lambda2" value="Action Group: get_costs_by_period(days)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l2_ath" edge="1" parent="lane_chat" source="lambda2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E67E22;fontColor=#7D6608;fontSize=9;fontStyle=2;" target="athena_c" value="StartQueryExecution( SQL )">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l2_org" edge="1" parent="lane_chat" source="lambda2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E67E22;fontColor=#7D6608;fontSize=9;fontStyle=2;" target="orgs_c" value="list_accounts()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_apigw_l1" edge="1" parent="1" source="apigw" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E86C1;fontColor=#1A5276;fontSize=10;fontStyle=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="lambda1" value="① POST /chat  (Bearer JWT)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_response" edge="1" parent="1" source="lambda1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#27AE60;fontColor=#1E8449;fontSize=10;fontStyle=3;dashed=1;endArrow=open;" target="user" value="← respuesta en lenguaje natural al usuario">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="112" y="480" />
+              <mxPoint x="92" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lane_report" parent="1" style="swimlane;startSize=36;fillColor=#FDEDEC;strokeColor=#E74C3C;fontStyle=1;fontSize=12;fontColor=#922B21;arcSize=4;rounded=1;" value="③ Flujo Reporte Excel — Envío Automático por Email (POST /send-report)" vertex="1">
+          <mxGeometry height="260" width="2060" x="60" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="lambda3" parent="lane_report" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Lambda 3" vertex="1">
+          <mxGeometry height="64" width="64" x="80" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="l3_detail" parent="lane_report" style="text;html=1;align=center;fontSize=9;fontColor=#922B21;whiteSpace=wrap;" value="&lt;b&gt;cur-report-email&lt;/b&gt;&lt;br&gt;Runtime: Python 3.x&lt;br&gt;Dependencia crítica: openpyxl&lt;br&gt;(NO viene en runtime base)&lt;br&gt;Genera Excel 4 hojas&lt;br&gt;Envía por SES" vertex="1">
+          <mxGeometry height="84" width="168" x="28" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="callout_excel" parent="lane_report" style="shape=mxgraph.misc.callout;whiteSpace=wrap;html=1;fillColor=#FDECEA;strokeColor=#E74C3C;fontSize=9;fontColor=#922B21;align=left;" value="&lt;b&gt;Excel .xlsx — 4 hojas&lt;/b&gt;&lt;br&gt;① Resumen Ejecutivo&lt;br&gt;② Detalle por Cuenta&lt;br&gt;③ Tendencia Mensual + gráfico&lt;br&gt;④ Alertas (&gt;15% o &gt;$500 USD)" vertex="1">
+          <mxGeometry height="110" width="220" x="240" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="athena_r" parent="lane_report" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.athena;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Athena" vertex="1">
+          <mxGeometry height="64" width="64" x="580" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ath_r_detail" parent="lane_report" style="text;html=1;align=center;fontSize=9;fontColor=#922B21;whiteSpace=wrap;" value="&lt;b&gt;3 queries en paralelo:&lt;/b&gt;&lt;br&gt;① Top 20 servicios por costo&lt;br&gt;② Costos por cuenta + servicio&lt;br&gt;③ Tendencia mensual 6 meses" vertex="1">
+          <mxGeometry height="68" width="168" x="528" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="orgs_r" parent="lane_report" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.organizations;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Organizations" vertex="1">
+          <mxGeometry height="64" width="64" x="900" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="org_r_detail" parent="lane_report" style="text;html=1;align=center;fontSize=9;fontColor=#922B21;whiteSpace=wrap;" value="&lt;b&gt;AWS Organizations&lt;/b&gt;&lt;br&gt;list_accounts()&lt;br&gt;Mapea account_id&lt;br&gt;→ nombre legible en Excel" vertex="1">
+          <mxGeometry height="58" width="160" x="852" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="ses" parent="lane_report" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ses;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Amazon SES" vertex="1">
+          <mxGeometry height="64" width="64" x="1260" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ses_detail" parent="lane_report" style="text;html=1;align=center;fontSize=9;fontColor=#922B21;whiteSpace=wrap;" value="&lt;b&gt;Amazon SES&lt;/b&gt;&lt;br&gt;From: daniel.cordero@protecso.com.pe&lt;br&gt;Adjunto: reporte_costos.xlsx&lt;br&gt;Destino: equipo de finanzas" vertex="1">
+          <mxGeometry height="58" width="184" x="1200" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l3_ath" edge="1" parent="lane_report" source="lambda3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E74C3C;fontColor=#922B21;fontSize=9;fontStyle=2;" target="athena_r" value="ejecuta 3 queries SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l3_org" edge="1" parent="lane_report" source="lambda3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E74C3C;fontColor=#922B21;fontSize=9;fontStyle=2;" target="orgs_r" value="list_accounts()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l3_ses" edge="1" parent="lane_report" source="lambda3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E74C3C;fontColor=#922B21;fontSize=9;fontStyle=1;" target="ses" value="SendRawEmail( .xlsx adjunto )">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_apigw_l3" edge="1" parent="1" source="apigw" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E74C3C;fontColor=#922B21;fontSize=10;fontStyle=1;" target="lambda3" value="② POST /send-report  (Bearer JWT)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lane_data" parent="1" style="swimlane;startSize=36;fillColor=#EAFAF1;strokeColor=#27AE60;fontStyle=1;fontSize=12;fontColor=#1E8449;arcSize=4;rounded=1;" value="④ Capa Datos — Amazon S3 (Almacenamiento)" vertex="1">
+          <mxGeometry height="240" width="2060" x="60" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="s3f_lane" parent="lane_data" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="S3 — Frontend SPA" vertex="1">
+          <mxGeometry height="64" width="64" x="120" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3f_lane_detail" parent="lane_data" style="text;html=1;align=center;fontSize=9;fontColor=#1E8449;whiteSpace=wrap;" value="&lt;b&gt;protecso-aws-cost-assistan&lt;/b&gt;&lt;br&gt;Contenido: index.html (SPA)&lt;br&gt;Acceso: solo vía CloudFront&lt;br&gt;Región: us-east-1" vertex="1">
+          <mxGeometry height="68" width="184" x="60" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_cur" parent="lane_data" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="S3 — Datos CUR" vertex="1">
+          <mxGeometry height="64" width="64" x="580" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3cur_detail" parent="lane_data" style="text;html=1;align=center;fontSize=9;fontColor=#1E8449;whiteSpace=wrap;" value="&lt;b&gt;aws-cur2-cost-exports-989663408506&lt;/b&gt;&lt;br&gt;Carpeta: /cost-and-usage/&lt;br&gt;Fuente: AWS Data Export (CUR 2.0)&lt;br&gt;Contiene: costos detallados por hora&lt;br&gt;Usado por: Athena (ambos flujos)" vertex="1">
+          <mxGeometry height="72" width="212" x="506" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_athena" parent="lane_data" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="S3 — Resultados Athena" vertex="1">
+          <mxGeometry height="64" width="64" x="1120" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3ath_detail" parent="lane_data" style="text;html=1;align=center;fontSize=9;fontColor=#1E8449;whiteSpace=wrap;" value="&lt;b&gt;athena-cost-by-account-results&lt;/b&gt;&lt;br&gt;Carpeta: /athena-results/ (output queries)&lt;br&gt;Archivo: cost-history.json (1.1 KB)&lt;br&gt;Escrito por: ambas Lambdas vía Athena&lt;br&gt;Región: us-east-1" vertex="1">
+          <mxGeometry height="72" width="220" x="1042" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ath_c_s3cur" edge="1" parent="1" source="athena_c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;strokeColor=#27AE60;fontColor=#1E8449;fontSize=9;fontStyle=2;" target="s3_cur" value="lee datos CUR">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ath_c_s3res" edge="1" parent="1" source="athena_c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;strokeColor=#27AE60;fontColor=#1E8449;fontSize=9;fontStyle=2;" target="s3_athena" value="escribe resultados query">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ath_r_s3cur" edge="1" parent="1" source="athena_r" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;strokeColor=#27AE60;fontColor=#1E8449;fontSize=9;fontStyle=2;" target="s3_cur" value="lee datos CUR">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ath_r_s3res" edge="1" parent="1" source="athena_r" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;strokeColor=#27AE60;fontColor=#1E8449;fontSize=9;fontStyle=2;" target="s3_athena" value="escribe resultados query">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BDC3C7;arcSize=4;shadow=1;" value="" vertex="1">
+          <mxGeometry height="420" width="500" x="1620" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_header" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#232F3E;strokeColor=#232F3E;arcSize=4;" value="" vertex="1">
+          <mxGeometry height="40" width="500" x="1620" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_title" parent="1" style="text;html=1;fontStyle=1;fontSize=13;align=center;fontColor=#FF9900;" value="Referencia Técnica del Proyecto" vertex="1">
+          <mxGeometry height="40" width="500" x="1620" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_s3" parent="1" style="text;html=1;fontSize=11;align=left;fontColor=#1E8449;" value="&lt;b&gt;Buckets S3&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="460" x="1640" y="992" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_s3a" parent="1" style="text;html=1;fontSize=10;align=left;" value="🗂  protecso-aws-cost-assistan  →  SPA Frontend (index.html)" vertex="1">
+          <mxGeometry height="18" width="460" x="1640" y="1014" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_s3b" parent="1" style="text;html=1;fontSize=10;align=left;" value="📦  aws-cur2-cost-exports-989663408506  →  Datos CUR" vertex="1">
+          <mxGeometry height="18" width="460" x="1640" y="1034" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_s3b2" parent="1" style="text;html=1;fontSize=9;align=left;fontColor=#777;" value="       /cost-and-usage/  (exportación AWS Data Export)" vertex="1">
+          <mxGeometry height="16" width="460" x="1640" y="1052" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_s3c" parent="1" style="text;html=1;fontSize=10;align=left;" value="📊  athena-cost-by-account-results  →  Resultados Athena" vertex="1">
+          <mxGeometry height="18" width="460" x="1640" y="1070" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_s3c2" parent="1" style="text;html=1;fontSize=9;align=left;fontColor=#777;" value="       /athena-results/ + cost-history.json (1.1 KB)" vertex="1">
+          <mxGeometry height="16" width="460" x="1640" y="1088" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sep1" parent="1" style="line;strokeColor=#BDC3C7;" value="" vertex="1">
+          <mxGeometry height="10" width="460" x="1640" y="1110" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_ids" parent="1" style="text;html=1;fontSize=11;align=left;fontColor=#7D6608;" value="&lt;b&gt;IDs de Producción&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="460" x="1640" y="1120" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_id1" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="Bedrock Agent ID:    LDJKO1JVKY" vertex="1">
+          <mxGeometry height="18" width="460" x="1640" y="1142" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_id2" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="Alias prod:              QJONGN6CNC" vertex="1">
+          <mxGeometry height="18" width="460" x="1640" y="1162" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_id3" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="Cognito Pool:           us-east-1_koWyGhMTX" vertex="1">
+          <mxGeometry height="18" width="460" x="1640" y="1182" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_id4" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="CUR Bucket ID:       989663408506" vertex="1">
+          <mxGeometry height="18" width="460" x="1640" y="1202" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sep2" parent="1" style="line;strokeColor=#BDC3C7;" value="" vertex="1">
+          <mxGeometry height="10" width="460" x="1640" y="1224" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_env" parent="1" style="text;html=1;fontSize=11;align=left;fontColor=#922B21;" value="&lt;b&gt;Variables de Entorno (Lambda 3)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="20" width="460" x="1640" y="1234" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_env1" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="ATHENA_DATABASE = aws_costs" vertex="1">
+          <mxGeometry height="16" width="460" x="1640" y="1256" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_env2" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="ATHENA_TABLE    = data" vertex="1">
+          <mxGeometry height="16" width="460" x="1640" y="1274" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_env3" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="ATHENA_OUTPUT   = s3://athena-cost-by-account-results/athena-results/" vertex="1">
+          <mxGeometry height="16" width="460" x="1640" y="1292" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_env4" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="SES_FROM_EMAIL  = daniel.cordero@protecso.com.pe" vertex="1">
+          <mxGeometry height="16" width="460" x="1640" y="1310" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_footer" parent="1" style="text;html=1;fontSize=9;align=center;fontColor=#AAB7B8;" value="v1.0.0  ·  Protecso  ·  us-east-1  ·  2026-03-18" vertex="1">
+          <mxGeometry height="20" width="460" x="1640" y="1340" as="geometry" />
+        </mxCell>
+        <mxCell id="security_note" parent="1" style="shape=mxgraph.misc.callout;whiteSpace=wrap;html=1;fillColor=#FFF3CD;strokeColor=#F39C12;fontSize=10;fontColor=#856404;align=left;" value="&lt;b&gt;⚠️ Nota de Seguridad&lt;/b&gt;&lt;br&gt;AGENT_ID y AGENT_ALIAS están hardcodeados en protecso-cur-chat.&lt;br&gt;Acción pendiente: migrar a variables de entorno Lambda." vertex="1">
+          <mxGeometry height="80" width="480" x="60" y="1210" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
