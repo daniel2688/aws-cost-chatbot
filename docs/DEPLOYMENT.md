@@ -34,9 +34,9 @@ aws lambda get-function-configuration \
 
 **Variables de entorno requeridas:**
 ```
-AGENT_ID      = LDJKO1JVKY
-AGENT_ALIAS   = QJONGN6CNC
-HISTORY_TABLE = cur-chat-history
+AGENT_ID      = <tu-bedrock-agent-id>
+AGENT_ALIAS   = <tu-bedrock-alias-id>
+HISTORY_TABLE = <nombre-tabla-dynamodb>
 ```
 
 ---
