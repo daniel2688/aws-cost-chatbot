@@ -1,0 +1,32 @@
+# Python / Lambda packaging
+__pycache__/
+*.py[cod]
+*.pyo
+package/
+*.zip
+.venv/
+venv/
+env/
+
+# AWS / Secretos — NUNCA commitear
+.env
+.env.*
+!.env.example
+*.pem
+credentials
+.aws/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Athena results
+athena-results/
+
+# Terraform (si se agrega IaC)
+*.tfstate
+*.tfstate.backup
+.terraform/
+*.tfplan
