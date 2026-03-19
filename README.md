@@ -1,7 +1,6 @@
 # 🤖 AWS Cost Chatbot — FinOps Intelligence
 
 > Chatbot serverless para consultar, analizar y reportar costos AWS en lenguaje natural.  
-> Desplegado en producción en **[chat.protecso.io](https://chat.protecso.io)** para Protecso.
 
 ![AWS](https://img.shields.io/badge/AWS-Serverless-FF9900?logo=amazon-aws&logoColor=white)
 ![Bedrock](https://img.shields.io/badge/Amazon_Bedrock-Claude_Sonnet-7C3AED)
