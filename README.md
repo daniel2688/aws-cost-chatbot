@@ -132,21 +132,21 @@ aws-cost-chatbot/
 
 ## 🔧 Componentes AWS
 
-| Servicio | Nombre / ID | Rol |
+| Servicio | Nombre | Rol |
 |---|---|---|
-| CloudFront | `protecso-cur-chat-cdn` | CDN · dominio `chat.protecso.io` |
+| CloudFront | `protecso-cur-chat-cdn` | CDN · dominio `www.midominio.com` |
 | S3 (frontend) | bucket SPA | Hospeda `index.html` |
-| Amazon Cognito | `protecso-cur-chat` · `us-east-1_koWyGhMTX` | Autenticación JWT |
+| Amazon Cognito | `protecso-cur-chat` | Autenticación JWT |
 | API Gateway | `protecso-cur-chat-api` | Rutas `/chat` y `/send-report` |
 | Lambda chat | `protecso-cur-chat` | Proxy al Bedrock Agent + historial |
 | Lambda report | `protecso-cur-report-email` | Athena → Excel → SES |
 | Lambda action | `protecso-cur-athena-action` | Action Group de Bedrock |
-| Bedrock Agent | `LDJKO1JVKY` · Alias prod: `QJONGN6CNC` | Claude Sonnet — razonamiento |
+| Bedrock Agent | `protecso-cur-agent` | Claude Sonnet — razonamiento |
 | DynamoDB | `cur-chat-history` | Sesiones de chat + historial de mensajes |
 | Athena | DB: `aws_costs` · Tabla: `data` | SQL sobre datos CUR |
 | S3 (datos) | `athena-cost-by-account-results` | CUR + resultados de Athena |
 | Amazon SES | `daniel.cordero@protecso.com.pe` | Envío del reporte `.xlsx` |
-| AWS Organizations | API `list_accounts` | Nombres reales de cuentas vinculadas |
+| AWS Organizations | `AWS Accounts` | Nombres reales de cuentas vinculadas |
 
 ---
 
@@ -170,7 +170,7 @@ API Gateway → JWT (Cognito claims) → DynamoDB (get session)
 
 **Runtime:** Python 3.12 | **Handler:** `lambda_function.lambda_handler`
 
----
+---x
 
 ### 2. `protecso-cur-report-email` — Generador de Reportes
 
@@ -234,9 +234,9 @@ El reporte `.xlsx` generado contiene **4 hojas**:
 
 | Variable | Descripción |
 |---|---|
-| `AGENT_ID` | ID del Bedrock Agent (`LDJKO1JVKY`) |
-| `AGENT_ALIAS` | Alias de producción (`QJONGN6CNC`) |
-| `HISTORY_TABLE` | Nombre de la tabla DynamoDB (`cur-chat-history`) |
+| `AGENT_ID` | ID del Bedrock Agent (`tu-bedrock-agent-id`) |
+| `AGENT_ALIAS` | Alias de producción (`tu-bedrock-alias-id`) |
+| `HISTORY_TABLE` | Nombre de la tabla DynamoDB (`No es un valor sensible pero lo indicamos arriba`) |
 
 ---
 
