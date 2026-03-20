@@ -2,9 +2,9 @@
 
 > AWS Cost Chatbot — FinOps Intelligence es una solución serverless diseñada para consultar, analizar y reportar los costos de AWS mediante lenguaje natural. Aprovecha modelos de inteligencia artificial para transformar datos complejos de facturación en insights claros, accionables y fáciles de entender.
 
-⚠️ Nota: Este proyecto se encuentra actualmente en una versión preliminar (early stage) y está en proceso continuo de mejora y evolución. Algunas funcionalidades pueden estar en desarrollo, cambiar o expandirse con el tiempo.
+> ⚠️ Nota: Este proyecto se encuentra actualmente en una versión preliminar (early stage) y está en proceso continuo de mejora y evolución. Algunas funcionalidades pueden estar en desarrollo, cambiar o expandirse con el tiempo.
 
-El chatbot permite a equipos técnicos y financieros (FinOps) obtener visibilidad sobre el gasto en la nube, identificar anomalías, optimizar recursos y mejorar la toma de decisiones sin necesidad de conocimientos avanzados en herramientas de AWS.  
+> El chatbot permite a equipos técnicos y financieros (FinOps) obtener visibilidad sobre el gasto en la nube, identificar anomalías, optimizar recursos y mejorar la toma de decisiones sin necesidad de conocimientos avanzados en herramientas de AWS.  
 
 ![AWS](https://img.shields.io/badge/AWS-Serverless-FF9900?logo=amazon-aws&logoColor=white)
 ![Bedrock](https://img.shields.io/badge/Amazon_Bedrock-Claude_Sonnet-7C3AED)
