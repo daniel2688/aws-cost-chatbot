@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinOps AWS · Protecso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- ✅ NUEVO: SheetJS para leer Excel en el browser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg:#07060f;--bg2:#0e0c1e;--bg3:#161430;--surface:#1a1736;--surface2:#221f42;
+      --border:#2d2860;--purple:#7c3aed;--purple2:#a855f7;--purple3:#c084fc;
+      --orange:#f97316;--orange2:#fb923c;--green:#34d399;--red:#f87171;--blue:#60a5fa;
+      --text:#f1f0ff;--text2:#a09fc0;--text3:#5c5a80;
+      --font:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(ellipse 80% 60% at 20% 10%,#7c3aed18 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 90%,#f9731610 0%,transparent 55%);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:.25}50%{transform:scale(1.8);opacity:0}}
+    @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes dots{0%{content:'.'}33%{content:'..'}66%{content:'...'}100%{content:''}}
+
+    /* LOGIN */
+    #login-screen{position:relative;z-index:1;width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:44px 40px;box-shadow:0 0 0 1px #7c3aed18,0 32px 80px rgba(0,0,0,.6),0 0 80px #7c3aed12;animation:fadeUp .5s ease both;}
+    .login-logo{margin-bottom:32px;display:flex;align-items:center;gap:12px;}
+    .login-logo-icon{width:44px;height:44px;background:linear-gradient(135deg,#7c3aed,#a855f7);border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px #7c3aed40;}
+    .login-logo-icon svg{width:24px;height:24px;}
+    .login-logo-text .l1{font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--text);}
+    .login-logo-text .l2{font-size:11px;font-weight:600;letter-spacing:.15em;color:var(--purple3);text-transform:uppercase;}
+    #login-screen h2{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+    #login-screen p{font-size:13px;color:var(--text2);margin-bottom:28px;}
+    .field{margin-bottom:14px;}
+    .field label{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:7px;}
+    .field input{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:11px 14px;font-size:14px;font-family:var(--font);outline:none;transition:border-color .2s,box-shadow .2s;}
+    .field input:focus{border-color:var(--purple);box-shadow:0 0 0 3px #7c3aed20;}
+    .field input::placeholder{color:var(--text3);}
+    #login-btn{width:100%;background:linear-gradient(135deg,var(--purple),var(--purple2));border:none;color:#fff;padding:13px;border-radius:10px;font-size:14px;font-weight:700;font-family:var(--font);letter-spacing:.05em;cursor:pointer;margin-top:6px;transition:opacity .2s,transform .1s,box-shadow .2s;box-shadow:0 4px 20px #7c3aed40;}
+    #login-btn:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 8px 28px #7c3aed50;}
+    #login-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+    #login-error{color:var(--red);font-size:13px;margin-top:12px;text-align:center;display:none;background:#f8717115;border:1px solid #f8717130;border-radius:8px;padding:8px 12px;}
+
+    /* CHANGE PASS */
+    #change-pass-screen{position:relative;z-index:1;width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:44px 40px;box-shadow:0 32px 80px rgba(0,0,0,.6);display:none;animation:fadeUp .4s ease both;}
+    #change-pass-screen h1{font-size:20px;font-weight:700;margin-bottom:6px;}
+    #change-pass-screen p{font-size:13px;color:var(--text2);margin-bottom:24px;}
+    #change-error{color:var(--red);font-size:13px;margin-top:12px;text-align:center;display:none;}
+
+    /* CHAT */
+    #chat-screen{position:relative;z-index:1;width:100%;max-width:820px;height:94vh;display:none;flex-direction:column;background:var(--bg2);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px #7c3aed12,0 40px 100px rgba(0,0,0,.7);animation:fadeUp .4s ease both;}
+
+    /* HEADER */
+    header{padding:0 20px;height:58px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-shrink:0;}
+    .header-dot-wrap{position:relative;width:10px;height:10px;flex-shrink:0;}
+    .header-dot{width:10px;height:10px;background:var(--green);border-radius:50%;}
+    .header-dot::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:var(--green);opacity:.25;animation:pulse 2s infinite;}
+    .header-brand{flex:1;display:flex;align-items:center;gap:10px;}
+    .header-logo-icon{width:28px;height:28px;background:linear-gradient(135deg,#7c3aed,#a855f7);border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px #7c3aed40;flex-shrink:0;}
+    .header-logo-icon svg{width:16px;height:16px;}
+    .header-title{font-size:13px;font-weight:700;letter-spacing:.02em;}
+    .header-title span{font-size:11px;font-weight:500;color:var(--purple3);margin-left:6px;font-family:var(--mono);}
+    #user-badge{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 12px 4px 8px;}
+    .user-avatar{width:22px;height:22px;background:linear-gradient(135deg,#7c3aed,#f97316);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
+    #user-email-text{font-size:11px;color:var(--text2);font-family:var(--mono);}
+    .hdr-btns{display:flex;gap:6px;}
+    .hdr-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:5px 11px;border-radius:8px;font-size:11px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+    .hdr-btn:hover{background:var(--border);color:var(--text);}
+    #clear-btn{border-color:#f8717130;color:var(--red);}
+    #clear-btn:hover{background:#f8717115;border-color:var(--red);}
+
+    /* BANNER */
+    #history-banner{background:linear-gradient(90deg,#7c3aed12,#a855f710);border-bottom:1px solid #7c3aed30;padding:9px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:var(--purple3);flex-shrink:0;}
+    #history-banner.hidden{display:none;}
+    #load-history-btn{background:#7c3aed25;border:1px solid #7c3aed50;color:var(--purple3);padding:4px 12px;border-radius:6px;font-size:11px;font-family:var(--font);font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s;}
+    #load-history-btn:hover{background:#7c3aed40;}
+
+    /* MESSAGES */
+    .messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;}
+    .messages::-webkit-scrollbar{width:3px;}
+    .messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+    .msg{max-width:78%;padding:13px 16px;border-radius:14px;font-size:13.5px;line-height:1.65;animation:msgIn .25s ease both;}
+    .msg.user{white-space:pre-wrap;}
+    .msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--purple),#6d28d9);border-bottom-right-radius:4px;box-shadow:0 4px 16px #7c3aed30;color:#fff;}
+    .msg.bot{align-self:flex-start;background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:4px;font-family:'Calibri','Trebuchet MS','Gill Sans',Arial,sans-serif;font-size:14px;line-height:1.8;}
+    .msg.bot.loading{color:var(--text3);font-style:italic;}
+    .msg.system{align-self:center;background:var(--bg3);border:1px solid var(--border);color:var(--text3);font-size:12px;border-radius:8px;padding:7px 14px;max-width:88%;text-align:center;}
+    .msg.history-divider{align-self:center;background:transparent;border:none;color:var(--text3);font-size:11px;padding:2px 0;letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
+    .msg-ts{font-size:10px;color:var(--text3);margin-top:5px;font-family:var(--mono);text-align:right;}
+    .msg.bot .msg-ts{text-align:left;}
+    .bot-prefix{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+    .bot-prefix-icon{width:18px;height:18px;background:linear-gradient(135deg,var(--purple),var(--purple2));border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .bot-prefix-icon svg{width:10px;height:10px;}
+    .bot-prefix-label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--purple3);text-transform:uppercase;}
+    .loading-dots::after{content:'';animation:dots 1.2s infinite;}
+    .msg.bot strong,.msg.bot b{color:var(--text);font-weight:700;}
+    .msg.bot em{color:var(--purple3);font-style:italic;}
+    /* ── Listas ── */
+    .msg.bot .md-row{display:flex;align-items:baseline;gap:0;margin:4px 0;font-size:14px;}
+    .msg.bot .md-n{min-width:26px;flex-shrink:0;color:var(--orange);font-weight:700;text-align:right;padding-right:8px;}
+    .msg.bot .md-t{flex:1;}
+    /* ── Separador elegante entre secciones ── */
+    .msg.bot .md-hr{display:block;height:1px;background:linear-gradient(90deg,transparent,var(--border) 30%,var(--border) 70%,transparent);margin:12px 0;}
+    /* ── Título de sección ── */
+    .msg.bot .md-section{display:block;margin:14px 0 6px;font-weight:700;color:var(--purple3);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding-bottom:5px;border-bottom:1px solid #7c3aed30;}
+    /* ── Párrafo con espacio ── */
+    .msg.bot .md-p{display:block;margin-bottom:8px;}
+    /* ── Montos monetarios destacados ── */
+    .msg.bot .md-money{color:var(--green);font-weight:700;}
+    .msg.bot .md-money-alert{color:var(--red);font-weight:700;}
+
+    /* SUGGESTIONS */
+    .suggestions{padding:0 18px 14px;display:flex;gap:7px;flex-wrap:wrap;flex-shrink:0;}
+    .suggestions button{background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:6px 13px;border-radius:20px;font-size:11.5px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .2s;}
+    .suggestions button:hover{background:var(--surface2);border-color:var(--purple);color:var(--purple3);transform:translateY(-1px);}
+    #btn-reporte{background:#f9731608;border:1px solid var(--orange);color:var(--orange);padding:6px 13px;border-radius:20px;font-size:11.5px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+    #btn-reporte:hover{background:var(--orange);color:#fff;transform:translateY(-1px);}
+
+    /* ✅ NUEVO: botón subir Excel */
+    #btn-excel{background:#34d39908;border:1px solid var(--green);color:var(--green);padding:6px 13px;border-radius:20px;font-size:11.5px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+    #btn-excel:hover{background:var(--green);color:#07060f;transform:translateY(-1px);}
+    #btn-excel.has-file{background:#34d39920;border-color:var(--green);box-shadow:0 0 0 2px #34d39930;}
+
+    /* INPUT */
+    .input-area{padding:14px 18px 16px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end;flex-shrink:0;}
+    textarea{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:11px 14px;font-size:13.5px;font-family:var(--font);resize:none;min-height:46px;max-height:120px;outline:none;transition:border-color .2s,box-shadow .2s;line-height:1.5;}
+    textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px #7c3aed18;}
+    textarea::placeholder{color:var(--text3);}
+    #send-btn{width:46px;height:46px;flex-shrink:0;background:linear-gradient(135deg,var(--purple),var(--purple2));border:none;color:#fff;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .2s,transform .1s,box-shadow .2s;box-shadow:0 4px 14px #7c3aed40;}
+    #send-btn:hover{opacity:.9;transform:translateY(-1px);}
+    #send-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+
+    /* MODAL REPORTE */
+    #modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9998;align-items:center;justify-content:center;}
+    #modal-overlay::before{content:'';position:absolute;inset:0;backdrop-filter:blur(4px);z-index:-1;}
+    #modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:28px 30px;width:430px;max-width:95vw;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:fadeUp .25s ease both;}
+    .modal-header{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+    .modal-icon{width:36px;height:36px;background:linear-gradient(135deg,#f97316,#fb923c);border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px #f9731640;font-size:17px;}
+    #modal-box h3{font-size:16px;font-weight:700;}
+    .modal-sub{font-size:12px;color:var(--text3);margin-bottom:20px;margin-left:46px;}
+    .modal-field{margin-bottom:14px;}
+    .modal-field label{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:6px;}
+    .modal-field input,.modal-field select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .2s;}
+    .modal-field input:focus,.modal-field select:focus{border-color:var(--orange);box-shadow:0 0 0 3px #f9731618;}
+    #modal-ctx{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px 13px;color:var(--text3);font-size:12px;font-style:italic;line-height:1.5;}
+    .modal-btns{display:flex;gap:10px;margin-top:20px;}
+    .modal-btns button{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;border:none;transition:all .2s;}
+    #modal-cancel{background:transparent;border:1px solid var(--border)!important;color:var(--text2);}
+    #modal-cancel:hover{background:var(--surface);}
+    #modal-send{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;flex:2!important;box-shadow:0 4px 16px #f9731640;}
+    #modal-send:hover{opacity:.9;transform:translateY(-1px);}
+    #modal-send:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+    #modal-status{display:none;margin-top:14px;padding:11px 14px;border-radius:10px;font-size:13px;line-height:1.6;white-space:pre-line;}
+
+    /* ── 📅 CALENDAR STYLES ── */
+    .cal-month-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .cal-month-title{font-size:13px;font-weight:700;color:var(--text);}
+    .cal-nav{background:var(--surface2);border:1px solid var(--border);color:var(--text2);width:26px;height:26px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;}
+    .cal-nav:hover{background:var(--orange);color:#fff;border-color:var(--orange);}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,32px);gap:2px;margin:0 auto;}
+    #cal-single{display:flex;flex-direction:column;align-items:center;}
+    .cal-month-header{width:254px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .cal-dow{font-size:10px;font-weight:700;color:var(--text3);text-align:center;padding:4px 0;letter-spacing:.06em;text-transform:uppercase;}
+    .cal-day{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:12px;font-family:var(--mono);border-radius:8px;cursor:pointer;transition:all .12s;color:var(--text2);position:relative;}
+    .cal-day:hover:not(.cal-disabled):not(.cal-empty):not(.cal-start):not(.cal-end){background:var(--surface2);color:var(--text);}
+    .cal-day.cal-today{color:var(--orange);font-weight:700;}
+    .cal-day.cal-today::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;background:var(--orange);border-radius:50%;}
+    .cal-day.cal-start,.cal-day.cal-end{background:var(--orange)!important;color:#fff!important;font-weight:700;border-radius:8px;z-index:1;}
+    .cal-day.cal-start:not(.cal-end){border-radius:8px 0 0 8px;}
+    .cal-day.cal-end:not(.cal-start){border-radius:0 8px 8px 0;}
+    .cal-day.cal-start.cal-end{border-radius:8px!important;}
+    .cal-day.cal-in-range{background:#f9731635;color:var(--text);border-radius:0;border-top:1px solid #f9731640;border-bottom:1px solid #f9731640;}
+    .cal-day.cal-disabled{color:var(--text3);opacity:.25;cursor:not-allowed;background:transparent!important;}
+    .cal-day.cal-before-min{color:var(--text3);opacity:.2;cursor:not-allowed;background:transparent!important;}
+    .cal-day.cal-empty{cursor:default;}
+    .cal-shortcut{background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:6px;font-size:11px;font-family:var(--font);font-weight:600;cursor:pointer;transition:all .15s;}
+    .cal-shortcut:hover,.cal-shortcut.active{background:var(--orange);color:#fff;border-color:var(--orange);}
+
+    /* MODAL HISTORIAL */
+    #history-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;backdrop-filter:blur(6px);align-items:center;justify-content:center;}
+    #history-modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:18px;width:620px;max-width:96vw;max-height:82vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7);animation:fadeUp .25s ease both;}
+    .hm-header{padding:16px 22px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .hm-header-left{display:flex;align-items:center;gap:10px;}
+    .hm-header-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--purple),var(--purple2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+    .hm-header h3{font-size:14px;font-weight:700;}
+    .hm-header span{font-size:11px;color:var(--text3);font-family:var(--mono);}
+    .hm-close{background:var(--surface2);border:1px solid var(--border);color:var(--text2);width:28px;height:28px;border-radius:7px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+    .hm-close:hover{background:#f8717120;color:var(--red);border-color:var(--red);}
+    .hm-search{padding:12px 20px;background:var(--bg);border-bottom:1px solid var(--border);}
+    .hm-search input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 13px;color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .2s;}
+    .hm-search input:focus{border-color:var(--purple);box-shadow:0 0 0 3px #7c3aed18;}
+    #history-list{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:10px;}
+    #history-list::-webkit-scrollbar{width:3px;}
+    #history-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+    .hist-pair{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s;display:flex;flex-direction:column;}
+    .hist-pair:hover{border-color:#7c3aed50;}
+    .hist-q{padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-shrink:0;}
+    .hist-q-text{font-size:13px;color:var(--text);font-weight:500;flex:1;}
+    .hist-q-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+    .hist-ts{font-size:10px;color:var(--text3);font-family:var(--mono);white-space:nowrap;}
+    .hist-repeat{background:#7c3aed15;border:1px solid #7c3aed40;color:var(--purple3);padding:3px 10px;border-radius:6px;font-size:11px;font-family:var(--font);font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;}
+    .hist-repeat:hover{background:var(--purple);color:#fff;border-color:var(--purple);}
+    .hist-a{padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.6;max-height:80px;overflow-y:auto;font-family:'Calibri','Trebuchet MS',Arial,sans-serif;flex:1;}
+    .hm-footer{padding:12px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .hm-footer span{font-size:11px;color:var(--text3);font-family:var(--mono);}
+    .hm-pagination{display:flex;gap:6px;}
+    .hm-pagination button{background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:5px 14px;border-radius:8px;font-size:12px;font-family:var(--font);font-weight:600;cursor:pointer;transition:all .2s;}
+    .hm-pagination button:hover:not(:disabled){background:var(--purple);color:#fff;border-color:var(--purple);}
+    .hm-pagination button:disabled{opacity:.3;cursor:not-allowed;}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-logo">
+    <div class="login-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M2 17l10 5 10-5" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M2 12l10 5 10-5" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="login-logo-text">
+      <div class="l1">FinOps AWS</div>
+      <div class="l2">Protecso · Cost Intelligence</div>
+    </div>
+  </div>
+  <h2>Bienvenido</h2>
+  <p>Inicia sesión con tu cuenta corporativa</p>
+  <div class="field"><label>Email</label><input type="email" id="email" placeholder="tu@protecso.com" onkeydown="if(event.key==='Enter')login()"/></div>
+  <div class="field"><label>Contraseña</label><input type="password" id="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"/></div>
+  <button id="login-btn" onclick="login()">Ingresar →</button>
+  <div id="login-error"></div>
+</div>
+
+<!-- CHANGE PASS -->
+<div id="change-pass-screen">
+  <h1>Nueva contraseña</h1>
+  <p>Es tu primer acceso. Define una contraseña nueva.</p>
+  <div class="field"><label>Nueva contraseña</label><input type="password" id="new-password" placeholder="Mínimo 8 caracteres"/></div>
+  <div class="field"><label>Confirmar</label><input type="password" id="confirm-password" placeholder="Repite la contraseña"/></div>
+  <button onclick="changePassword()" style="width:100%;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;color:#fff;padding:13px;border-radius:10px;font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer;margin-top:8px;">Guardar y continuar →</button>
+  <div id="change-error"></div>
+</div>
+
+<!-- CHAT -->
+<div id="chat-screen">
+  <header>
+    <div class="header-dot-wrap"><div class="header-dot"></div></div>
+    <div class="header-brand">
+      <div class="header-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/><path d="M2 17l10 5 10-5" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/><path d="M2 12l10 5 10-5" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="header-title">FinOps AWS <span>· Claude Sonnet 4</span></div>
+    </div>
+    <div id="user-badge">
+      <div class="user-avatar" id="user-avatar-letter">D</div>
+      <span id="user-email-text">–</span>
+      <span id="session-timer" style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-left:4px;" title="Tiempo de sesión restante">55m</span>
+    </div>
+    <div class="hdr-btns">
+      <button class="hdr-btn" onclick="abrirHistorialModal()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Historial
+      </button>
+      <button class="hdr-btn" id="clear-btn" onclick="confirmarLimpiar()" title="Borrar historial">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6m4-6v6"/></svg>
+      </button>
+      <button class="hdr-btn" id="logout-btn" onclick="logout()">Salir</button>
+    </div>
+  </header>
+
+  <div id="history-banner" class="hidden">
+    <span id="history-summary-text"></span>
+    <button id="load-history-btn" onclick="cargarUltimosMensajes()">Ver últimos mensajes ↓</button>
+  </div>
+
+  <div class="messages" id="messages">
+    <div class="msg bot">
+      <div class="bot-prefix">
+        <div class="bot-prefix-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <span class="bot-prefix-label">FinOps Agent</span>
+      </div>¡Hola! Soy tu asistente de costos AWS. Tengo acceso a los datos reales de tu organización. ¿Qué quieres saber?
+    </div>
+  </div>
+
+  <div class="suggestions">
+    <button onclick="sendMsg('¿Cuánto gastó la organización esta semana?')">💰 Gasto semanal</button>
+    <button onclick="sendMsg('¿Qué cuentas tuvieron un gasto superior a $500 USD esta semana? Muéstrame el detalle por cuenta y servicio.')">🚨 Alertas +$500</button>
+    <button onclick="sendMsg('¿Cuáles son los 3 servicios más caros?')">🔥 Top servicios</button>
+    <button onclick="sendMsg('Dame recomendaciones para reducir costos')">💡 Optimizar</button>
+    <!-- ✅ NUEVO: input file oculto + botón Subir Excel -->
+    <input type="file" id="excel-file-input" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleExcelUpload(event)">
+    <button id="btn-excel" onclick="document.getElementById('excel-file-input').click()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Subir Excel
+    </button>
+    <button id="btn-reporte" onclick="abrirModal()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      Enviar reporte
+    </button>
+  </div>
+
+  <div class="input-area">
+    <textarea id="input" placeholder="Pregunta sobre costos AWS..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+    <button id="send-btn" onclick="sendMsg()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- MODAL REPORTE -->
+<div id="modal-overlay">
+  <div id="modal-box" style="width:480px;max-width:96vw;max-height:92vh;overflow-y:auto;">
+    <div class="modal-header"><div class="modal-icon">📊</div><h3>Enviar reporte Excel</h3></div>
+    <p class="modal-sub">Genera el reporte de costos y lo envía adjunto por correo</p>
+
+    <!-- Vista 1: Formulario -->
+    <div id="modal-form-view">
+      <div class="modal-field"><label>Correo destinatario</label>
+        <input type="email" id="modal-email" placeholder="gerencia@empresa.com"/>
+      </div>
+
+      <div class="modal-field">
+        <label>Período de análisis</label>
+        <!-- Shortcuts rápidos -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+          <button class="cal-shortcut" onclick="applyShortcut('week')">Esta semana</button>
+          <button class="cal-shortcut" onclick="applyShortcut('march_half1')">1–15 mar</button>
+          <button class="cal-shortcut" onclick="applyShortcut('march_half2')">16–31 mar</button>
+          <button class="cal-shortcut" onclick="applyShortcut('march_full')">Todo marzo</button>
+          <button class="cal-shortcut" onclick="applyShortcut('all')">Todo disponible</button>
+        </div>
+        <!-- Trigger informativo: muestra rango disponible -->
+        <div id="date-range-trigger" onclick="toggleCalendar()"
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;
+                 padding:10px 13px;color:var(--text);font-size:13px;font-family:var(--font);
+                 cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+                 transition:border-color .2s;user-select:none;">
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <span style="font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;">Datos disponibles</span>
+            <span id="date-range-label" style="color:var(--text2);">01 mar. 2026 → <span id="date-range-today"></span></span>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+
+        <!-- Calendario embebido (oculto por defecto) -->
+        <div id="cal-inline" style="display:none;margin-top:10px;background:var(--bg);
+             border:1px solid var(--border);border-radius:12px;padding:14px;">
+          <div id="cal-instruction" style="font-size:11px;color:var(--orange);text-align:center;
+               margin-bottom:10px;font-weight:600;">
+            1. Click en fecha de inicio &nbsp;→&nbsp; 2. Click en fecha de fin
+          </div>
+          <!-- Un solo calendario centrado para simplicidad y confiabilidad -->
+          <div id="cal-single" style="margin:0 auto;"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;
+               margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+            <span id="cal-selected-range" style="font-size:12px;color:var(--orange);font-weight:600;"></span>
+            <button onclick="applyCalendar()"
+              style="background:linear-gradient(135deg,var(--orange),var(--orange2));border:none;
+                     color:#fff;padding:7px 18px;border-radius:8px;font-size:12px;
+                     font-family:var(--font);font-weight:700;cursor:pointer;">
+              Confirmar →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-field" id="modal-ctx-wrap" style="display:none">
+        <label>Contexto actual</label><div id="modal-ctx"></div>
+      </div>
+      <div class="modal-field">
+        <label>Mensaje personalizado <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
+        <textarea id="modal-note" placeholder="Ej: Estimado equipo, adjunto el reporte mensual de costos AWS para su revisión..."
+          style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;
+                 padding:10px 13px;color:var(--text);font-size:13px;font-family:var(--font);
+                 outline:none;resize:vertical;min-height:72px;max-height:140px;line-height:1.5;transition:border-color .2s;"
+          onfocus="this.style.borderColor='var(--orange)';this.style.boxShadow='0 0 0 3px #f9731618'"
+          onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'"></textarea>
+      </div>
+      <div class="modal-btns">
+        <button id="modal-cancel" onclick="cerrarModal()">Cancelar</button>
+        <button id="modal-send" onclick="enviarReporte()">📧 Enviar reporte Excel</button>
+      </div>
+      <div id="modal-status"></div>
+    </div>
+  </div>
+</div>
+
+<div id="history-modal-overlay">
+  <div id="history-modal-box">
+    <div class="hm-header">
+      <div class="hm-header-left">
+        <div class="hm-header-icon">📋</div>
+        <div><h3>Historial de consultas</h3><span id="hm-subtitle">–</span></div>
+      </div>
+      <button class="hm-close" onclick="cerrarHistorialModal()">✕</button>
+    </div>
+    <div class="hm-search"><input type="text" id="hm-search-input" placeholder="🔍  Buscar en el historial..." oninput="filtrarHistorial(this.value)"/></div>
+    <div id="history-list"></div>
+    <div class="hm-footer">
+      <span id="hm-page-info">–</span>
+      <div class="hm-pagination">
+        <button id="hm-prev" onclick="cambiarPagina(-1)" disabled>← Anterior</button>
+        <button id="hm-next" onclick="cambiarPagina(1)">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CONFIG={REGION:'us-east-1',USER_POOL_ID:'YOUR_COGNITO_USER_POOL_ID',CLIENT_ID:'YOUR_COGNITO_CLIENT_ID',API_URL:'https://YOUR_API_ID.execute-api.us-east-1.amazonaws.com/prod/chat',REPORT_URL:'https://YOUR_API_ID.execute-api.us-east-1.amazonaws.com/prod/send-report'};
+
+// 🔐 Refresh automático de token Cognito usando RefreshToken
+async function refreshTokenIfNeeded(){
+  try {
+    const refreshToken = localStorage.getItem('cur_refresh_token');
+    if(!refreshToken) return false;
+    const res = await fetch(`https://cognito-idp.${CONFIG.REGION}.amazonaws.com/`, {
+      method:'POST',
+      headers:{'Content-Type':'application/x-amz-json-1.1','X-Amz-Target':'AWSCognitoIdentityProviderService.InitiateAuth'},
+      body: JSON.stringify({
+        AuthFlow: 'REFRESH_TOKEN_AUTH',
+        ClientId: CONFIG.CLIENT_ID,
+        AuthParameters: { REFRESH_TOKEN: refreshToken }
+      })
+    });
+    const data = await res.json();
+    if(data.AuthenticationResult?.IdToken){
+      idToken = data.AuthenticationResult.IdToken;
+      localStorage.setItem('cur_token', idToken);
+      console.log('🔄 Token refrescado automáticamente');
+      return true;
+    }
+    return false;
+  } catch(e){
+    console.warn('No se pudo refrescar el token:', e);
+    return false;
+  }
+}
+
+// 🔁 Fetch con auto-retry si el token expiró (401)
+async function fetchWithAuth(url, options){
+  let res = await fetch(url, {...options, headers:{...options.headers,'Authorization':idToken}});
+  if(res.status === 401){
+    mostrarAvisoSesionExpirada();
+    throw new Error('Sesión expirada. Vuelve a iniciar sesión.');
+  }
+  return res;
+}
+
+function mostrarAvisoSesionExpirada(){
+  const overlay = document.createElement('div');
+  overlay.id = 'session-expired-overlay';
+  overlay.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999999;
+    display:flex;align-items:center;justify-content:center;
+    backdrop-filter:blur(6px);animation:fadeUp .3s ease both;
+  `;
+  overlay.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;
+                padding:36px 40px;text-align:center;max-width:360px;
+                box-shadow:0 30px 80px rgba(0,0,0,.6);">
+      <div style="font-size:36px;margin-bottom:16px;">🔐</div>
+      <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;color:var(--text);">
+        Sesión expirada
+      </h3>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.6;">
+        Tu sesión ha caducado por inactividad.<br>
+        Vuelve a iniciar sesión para continuar.
+      </p>
+      <button onclick="sessionExpiredLogin()"
+        style="background:linear-gradient(135deg,var(--purple),var(--purple2));
+               border:none;color:#fff;padding:12px 32px;border-radius:10px;
+               font-size:14px;font-weight:700;font-family:var(--font);
+               cursor:pointer;width:100%;">
+        Iniciar sesión nuevamente
+      </button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function sessionExpiredLogin(){
+  if(sessionTimer){ clearInterval(sessionTimer); sessionTimer=null; }
+  const overlay = document.getElementById('session-expired-overlay');
+  if(overlay) overlay.remove();
+  localStorage.removeItem('cur_token');
+  localStorage.removeItem('cur_refresh_token');
+  localStorage.removeItem('cur_email');
+  localStorage.removeItem('cur_token_issued');
+  idToken = null;
+  historialCompleto = [];
+  document.getElementById('chat-screen').style.display  = 'none';
+  document.getElementById('login-screen').style.display = 'block';
+  document.getElementById('password').value = '';
+  document.getElementById('login-error').style.display = 'none';
+  const btn = document.getElementById('login-btn');
+  if(btn){ btn.disabled=false; btn.textContent='Ingresar →'; }
+}
+
+const SESSION_ID='session_'+Math.random().toString(36).substr(2,9);
+let idToken=null,cognitoSession=null,lastBotMsg='',historialCompleto=[],historialFiltrado=[],hmPagina=0;
+const HM_POR_PAGINA=8;
+
+// ✅ NUEVO: variables para contexto Excel
+let _excelContext = null;
+let _excelFileName = null;
+
+async function cognitoAuth(e,p){const r=await fetch(`https://cognito-idp.${CONFIG.REGION}.amazonaws.com/`,{method:'POST',headers:{'Content-Type':'application/x-amz-json-1.1','X-Amz-Target':'AWSCognitoIdentityProviderService.InitiateAuth'},body:JSON.stringify({AuthFlow:'USER_PASSWORD_AUTH',ClientId:CONFIG.CLIENT_ID,AuthParameters:{USERNAME:e,PASSWORD:p}})});return r.json();}
+async function cognitoNewPassword(e,p,s){const r=await fetch(`https://cognito-idp.${CONFIG.REGION}.amazonaws.com/`,{method:'POST',headers:{'Content-Type':'application/x-amz-json-1.1','X-Amz-Target':'AWSCognitoIdentityProviderService.RespondToAuthChallenge'},body:JSON.stringify({ChallengeName:'NEW_PASSWORD_REQUIRED',ClientId:CONFIG.CLIENT_ID,Session:s,ChallengeResponses:{USERNAME:e,NEW_PASSWORD:p}})});return r.json();}
+
+async function login(){
+  const email=document.getElementById('email').value.trim(),pass=document.getElementById('password').value;
+  const errEl=document.getElementById('login-error'),btn=document.getElementById('login-btn');
+  if(!email||!pass){showErr(errEl,'Completa email y contraseña.');return;}
+  btn.disabled=true;btn.textContent='Ingresando...';errEl.style.display='none';
+  try{
+    const data=await cognitoAuth(email,pass);
+    if(data.ChallengeName==='NEW_PASSWORD_REQUIRED'){cognitoSession={session:data.Session,email};document.getElementById('login-screen').style.display='none';document.getElementById('change-pass-screen').style.display='block';return;}
+    if(data.AuthenticationResult){
+      idToken=data.AuthenticationResult.IdToken;
+      localStorage.setItem('cur_token', idToken);
+      localStorage.setItem('cur_email', email);
+      localStorage.setItem('cur_token_issued', Date.now());
+      if(data.AuthenticationResult.RefreshToken)
+        localStorage.setItem('cur_refresh_token',data.AuthenticationResult.RefreshToken);
+      showChat(email);return;
+    }
+    showErr(errEl,data.message||'Credenciales incorrectas.');
+  }catch(e){showErr(errEl,'Error de conexión.');}
+  btn.disabled=false;btn.textContent='Ingresar →';
+}
+
+async function changePassword(){
+  const np=document.getElementById('new-password').value,cp=document.getElementById('confirm-password').value,errEl=document.getElementById('change-error');
+  if(np.length<8){showErr(errEl,'Mínimo 8 caracteres.');return;}
+  if(np!==cp){showErr(errEl,'Las contraseñas no coinciden.');return;}
+  try{const data=await cognitoNewPassword(cognitoSession.email,np,cognitoSession.session);
+    if(data.AuthenticationResult){
+      idToken=data.AuthenticationResult.IdToken;
+      localStorage.setItem('cur_token',idToken);
+      localStorage.setItem('cur_email',cognitoSession.email);
+      localStorage.setItem('cur_token_issued', Date.now());
+      showChat(cognitoSession.email);
+    } else showErr(errEl,data.message||'Error.');
+  }catch(e){showErr(errEl,'Error de conexión.');}
+}
+
+function logout(){
+  if(sessionTimer){ clearInterval(sessionTimer); sessionTimer=null; }
+  localStorage.removeItem('cur_token');
+  localStorage.removeItem('cur_refresh_token');
+  localStorage.removeItem('cur_email');
+  idToken=null; historialCompleto=[];
+  // ✅ limpiar contexto Excel al salir
+  _excelContext=null; _excelFileName=null;
+  document.getElementById('chat-screen').style.display='none';
+  document.getElementById('login-screen').style.display='block';
+  document.getElementById('password').value='';
+}
+
+let sessionTimer = null;
+let sessionExpireAt = null;
+
+function showChat(email){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('change-pass-screen').style.display='none';
+  document.getElementById('chat-screen').style.display='flex';
+  document.getElementById('user-email-text').textContent=email;
+  document.getElementById('user-avatar-letter').textContent=email.charAt(0).toUpperCase();
+  cargarHistorialSilencioso();
+  iniciarTimerSesion();
+}
+
+function iniciarTimerSesion(){
+  if(sessionTimer) clearInterval(sessionTimer);
+
+  const TOKEN_DURACION = 60 * 60 * 1000;
+  const AVISO_ANTES    =  5 * 60 * 1000;
+  let avisoMostrado    = false;
+
+  function actualizarTimer(){
+    const issuedStr = localStorage.getItem('cur_token_issued');
+    if(!issuedStr) return;
+    const issued    = parseInt(issuedStr);
+    const remaining = TOKEN_DURACION - (Date.now() - issued);
+    const badge     = document.getElementById('session-timer');
+
+    if(remaining <= 0){
+      clearInterval(sessionTimer); sessionTimer = null;
+      if(badge) badge.textContent = '!';
+      mostrarAvisoSesionExpirada();
+      return;
+    }
+
+    const mins = Math.floor(remaining / 60000);
+    const segs = Math.floor((remaining % 60000) / 1000);
+
+    if(badge){
+      badge.textContent = mins < 10
+        ? `${mins}:${String(segs).padStart(2,'0')}`
+        : `${mins}m`;
+      badge.style.color = mins < 5  ? 'var(--red)'
+                        : mins < 10 ? 'var(--orange)'
+                        : 'var(--text3)';
+      badge.title = `Sesión expira en ${mins} min ${segs} seg`;
+    }
+
+    if(!avisoMostrado && remaining <= AVISO_ANTES){
+      avisoMostrado = true;
+      addMessage('⚠️ Tu sesión expirará en 5 minutos. Guarda tu trabajo.', 'system');
+    }
+  }
+
+  actualizarTimer();
+  sessionTimer = setInterval(actualizarTimer, 10000);
+}
+
+function showErr(el,msg){el.textContent=msg;el.style.display='block';}
+
+window.addEventListener('load',()=>{
+  const btn = document.getElementById('login-btn');
+  if(btn){ btn.disabled=false; btn.textContent='Ingresar →'; }
+
+  const s      = localStorage.getItem('cur_token');
+  const e      = localStorage.getItem('cur_email');
+  const issued = parseInt(localStorage.getItem('cur_token_issued') || '0');
+
+  if(s && e){
+    const elapsed   = Date.now() - issued;
+    const TOKEN_DUR = 60 * 60 * 1000;
+    if(issued > 0 && elapsed >= TOKEN_DUR){
+      localStorage.removeItem('cur_token');
+      localStorage.removeItem('cur_token_issued');
+      return;
+    }
+    idToken = s;
+    showChat(e);
+  }
+});
+
+async function cargarHistorialSilencioso(){
+  if(!idToken) return;
+  try{
+    const res  = await fetchWithAuth(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'get_history'})});
+    const data = await res.json();
+    if(data.messages && data.messages.length > 0){
+      historialCompleto = data.messages;
+      mostrarHistorialEnChat(data.messages);
+    }
+  }catch(e){}
+}
+
+function mostrarHistorialEnChat(messages){
+  if(!messages || messages.length === 0) return;
+  const msgs = document.getElementById('messages');
+
+  const d1 = document.createElement('div');
+  d1.className = 'msg history-divider';
+  d1.textContent = '── historial anterior ──';
+  msgs.appendChild(d1);
+
+  messages.forEach(m => {
+    const el = document.createElement('div');
+    el.className = `msg ${m.role === 'user' ? 'user' : 'bot'}`;
+    if(m.role === 'assistant'){
+      const pre = document.createElement('div'); pre.className = 'bot-prefix';
+      pre.innerHTML = `<div class="bot-prefix-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="bot-prefix-label">FinOps Agent</span>`;
+      el.appendChild(pre);
+      const body = document.createElement('div'); body.innerHTML = parseMarkdown(m.content);
+      el.appendChild(body);
+    } else {
+      el.appendChild(document.createTextNode(m.content));
+    }
+    if(m.ts){
+      const ts = document.createElement('div'); ts.className = 'msg-ts';
+      ts.textContent = formatTs(m.ts); el.appendChild(ts);
+    }
+    msgs.appendChild(el);
+  });
+
+  const d2 = document.createElement('div');
+  d2.className = 'msg history-divider';
+  d2.textContent = '── conversación actual ──';
+  msgs.appendChild(d2);
+
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function cargarUltimosMensajes(){
+  if(!historialCompleto.length)return;
+  document.getElementById('history-banner').classList.add('hidden');
+  const msgs=document.getElementById('messages');
+  const d1=document.createElement('div');d1.className='msg history-divider';d1.textContent='── historial anterior ──';
+  msgs.insertBefore(d1,msgs.children[1]);
+  const ult=historialCompleto.slice(-10);
+  ult.forEach((m,i)=>{
+    const el=document.createElement('div');el.className=`msg ${m.role==='user'?'user':'bot'}`;
+    if(m.role==='assistant'){
+      const pre=document.createElement('div');pre.className='bot-prefix';
+      pre.innerHTML=`<div class="bot-prefix-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="bot-prefix-label">FinOps Agent</span>`;
+      el.appendChild(pre);
+      const body=document.createElement('div');body.innerHTML=parseMarkdown(m.content);el.appendChild(body);
+    } else { el.appendChild(document.createTextNode(m.content)); }
+    if(m.ts){const ts=document.createElement('div');ts.className='msg-ts';ts.textContent=formatTs(m.ts);el.appendChild(ts);}
+    msgs.insertBefore(el,msgs.children[i+2]);
+  });
+  const d2=document.createElement('div');d2.className='msg history-divider';d2.textContent='── conversación actual ──';
+  msgs.insertBefore(d2,msgs.children[ult.length+2]);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function abrirHistorialModal(){if(!historialCompleto.length)await cargarHistorialSilencioso();hmPagina=0;historialFiltrado=historialCompleto;document.getElementById('hm-search-input').value='';renderHistorialModal();document.getElementById('history-modal-overlay').style.display='flex';}
+function cerrarHistorialModal(){document.getElementById('history-modal-overlay').style.display='none';}
+function filtrarHistorial(q){historialFiltrado=q.trim()?historialCompleto.filter(m=>m.content.toLowerCase().includes(q.toLowerCase())):historialCompleto;hmPagina=0;renderHistorialModal();}
+function cambiarPagina(dir){const p=obtenerPares(historialFiltrado),max=Math.max(0,Math.ceil(p.length/HM_POR_PAGINA)-1);hmPagina=Math.max(0,Math.min(max,hmPagina+dir));renderHistorialModal();}
+function obtenerPares(msgs){const p=[];for(let i=0;i<msgs.length-1;i++){if(msgs[i].role==='user'&&msgs[i+1].role==='assistant'){p.push({q:msgs[i],a:msgs[i+1]});i++;}}return p;}
+
+function renderHistorialModal(){
+  const pares=obtenerPares(historialFiltrado),total=pares.length,maxPag=Math.max(0,Math.ceil(total/HM_POR_PAGINA)-1);
+  const pagAct=pares.slice(hmPagina*HM_POR_PAGINA,Math.min((hmPagina+1)*HM_POR_PAGINA,total));
+  document.getElementById('hm-subtitle').textContent=total>0?`${total} consultas guardadas`:'Sin historial aún';
+  document.getElementById('hm-page-info').textContent=total>0?`Página ${hmPagina+1}/${maxPag+1} · ${total} consultas`:'Sin resultados';
+  document.getElementById('hm-prev').disabled=hmPagina===0;
+  document.getElementById('hm-next').disabled=hmPagina>=maxPag||total===0;
+  const list=document.getElementById('history-list');list.innerHTML='';
+  if(!pagAct.length){list.innerHTML='<div style="color:var(--text3);font-size:13px;text-align:center;padding:32px">Sin consultas para mostrar</div>';return;}
+  pagAct.forEach(par=>{
+    const wrap=document.createElement('div');wrap.className='hist-pair';
+    const q=document.createElement('div');q.className='hist-q';
+    const qtxt=document.createElement('span');qtxt.className='hist-q-text';qtxt.textContent=par.q.content;
+    const meta=document.createElement('div');meta.className='hist-q-right';
+    const ts=document.createElement('span');ts.className='hist-ts';ts.textContent=formatTs(par.q.ts);
+    const btn=document.createElement('button');
+    btn.className='hist-repeat';
+    btn.textContent='↩ Repetir';
+    btn.dataset.query=par.q.content;
+    btn.addEventListener('click', function(){
+      reutilizarConsulta(this.dataset.query);
+    });
+    meta.appendChild(ts);meta.appendChild(btn);
+    q.appendChild(qtxt);q.appendChild(meta);
+    const a=document.createElement('div');a.className='hist-a';a.innerHTML=parseMarkdown(par.a.content);
+    wrap.appendChild(q);wrap.appendChild(a);list.appendChild(wrap);
+  });
+}
+
+function reutilizarConsulta(t){
+  cerrarHistorialModal();
+  setTimeout(()=>sendMsg(t), 150);
+}
+
+async function confirmarLimpiar(){
+  if(!confirm('¿Borrar todo el historial de consultas? Esta acción no se puede deshacer.'))return;
+  try{await fetchWithAuth(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'clear_history'})});historialCompleto=[];document.getElementById('history-banner').classList.add('hidden');addMessage('🗑 Historial borrado correctamente.','system');}
+  catch(e){addMessage('Error al borrar el historial.','system');}
+}
+
+const messagesEl=document.getElementById('messages');
+function addMessage(text,type){
+  const div=document.createElement('div');div.className=`msg ${type}`;
+  if(type==='bot loading'){
+    const pre=document.createElement('div');pre.className='bot-prefix';
+    pre.innerHTML=`<div class="bot-prefix-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="bot-prefix-label">FinOps Agent</span>`;
+    div.appendChild(pre);
+  } else if(type==='bot'){
+    const pre=document.createElement('div');pre.className='bot-prefix';
+    pre.innerHTML=`<div class="bot-prefix-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="bot-prefix-label">FinOps Agent</span>`;
+    div.appendChild(pre);
+    const body=document.createElement('div');body.innerHTML=parseMarkdown(text);div.appendChild(body);
+  } else {
+    div.appendChild(document.createTextNode(text));
+  }
+  messagesEl.appendChild(div);messagesEl.scrollTop=messagesEl.scrollHeight;return div;
+}
+
+// ✅ NUEVO: función para leer Excel y enviar al agente
+async function handleExcelUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  // Reset para permitir subir el mismo archivo de nuevo
+  e.target.value = '';
+
+  // Mensaje del usuario en el chat
+  const userDiv = document.createElement('div');
+  userDiv.className = 'msg user';
+  userDiv.appendChild(document.createTextNode('📎 ' + file.name));
+  messagesEl.appendChild(userDiv);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  // Loading del bot
+  const loading = addMessage('', 'bot loading');
+  const lspan = document.createElement('span');
+  lspan.className = 'loading-dots';
+  lspan.textContent = 'Leyendo Excel';
+  loading.appendChild(lspan);
+
+  try {
+    const buffer = await file.arrayBuffer();
+    const wb = XLSX.read(buffer, { type: 'array' });
+
+    // Convertir cada hoja a texto (máx 100 filas por hoja para no saturar el contexto)
+    let resumen = `El usuario subió el archivo Excel: "${file.name}"\n\n`;
+    resumen += `Hojas disponibles: ${wb.SheetNames.join(', ')}\n\n`;
+
+    wb.SheetNames.forEach(sheetName => {
+      const ws = wb.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      if (rows.length === 0) return;
+      resumen += `--- HOJA: ${sheetName} ---\n`;
+      const maxRows = Math.min(rows.length, 100);
+      rows.slice(0, maxRows).forEach(row => {
+        resumen += row.map(cell => String(cell).trim()).join(' | ') + '\n';
+      });
+      if (rows.length > 100) {
+        resumen += `[... ${rows.length - 100} filas adicionales]\n`;
+      }
+      resumen += '\n';
+    });
+    resumen += `Por favor analiza estos datos y responde en español.`;
+
+    // Guardar contexto para el próximo sendMsg
+    _excelContext = resumen;
+    _excelFileName = file.name;
+
+    loading.remove();
+
+    // Preview en el chat con botón de estilo igual a las suggestions
+    const preview = document.createElement('div');
+    preview.className = 'msg bot';
+    const pre = document.createElement('div'); pre.className = 'bot-prefix';
+    pre.innerHTML = `<div class="bot-prefix-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="bot-prefix-label">FinOps Agent</span>`;
+    preview.appendChild(pre);
+
+    const body = document.createElement('div');
+    body.innerHTML = `
+      <div style="background:#34d39910;border:1px solid #34d39940;border-radius:8px;padding:10px 13px;margin-bottom:10px;">
+        <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;">✅ Excel cargado — ${file.name}</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;">${wb.SheetNames.length} hoja(s) detectada(s): <strong style="color:var(--text)">${wb.SheetNames.join(', ')}</strong><br>¿Qué quieres analizar?</div>
+      </div>
+    `;
+
+    // Chips de preguntas rápidas sobre el Excel
+    const chips = document.createElement('div');
+    chips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;';
+    [
+      { label: '📊 Resumen general', msg: '¿Cuál es el resumen general de los datos del Excel que subí?' },
+      { label: '🏢 Por cuenta',      msg: '¿Qué cuentas tienen el mayor gasto en el Excel?' },
+      { label: '🚨 Alertas',         msg: '¿Hay alertas o gastos anómalos en el Excel?' },
+    ].forEach(chip => {
+      const btn = document.createElement('button');
+      btn.textContent = chip.label;
+      btn.style.cssText = 'background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .2s;';
+      btn.onmouseover = () => { btn.style.borderColor='var(--purple)'; btn.style.color='var(--purple3)'; };
+      btn.onmouseout  = () => { btn.style.borderColor='var(--border)'; btn.style.color='var(--text2)'; };
+      btn.onclick = () => sendMsg(chip.msg);
+      chips.appendChild(btn);
+    });
+
+    body.appendChild(chips);
+    preview.appendChild(body);
+    messagesEl.appendChild(preview);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    // Actualizar botón para indicar que hay Excel cargado
+    const btnExcel = document.getElementById('btn-excel');
+    if(btnExcel){
+      btnExcel.classList.add('has-file');
+      btnExcel.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ${file.name.length > 18 ? file.name.substring(0,18)+'…' : file.name}`;
+    }
+
+  } catch (err) {
+    loading.remove();
+    console.error('Error leyendo Excel:', err);
+    addMessage('❌ No se pudo leer el archivo. Asegúrate que sea .xlsx, .xls o .csv válido.', 'bot');
+  }
+}
+
+async function sendMsg(text){
+  const msg=text||document.getElementById('input').value.trim();
+  if(!msg){ console.warn('sendMsg: mensaje vacío'); return; }
+  if(!idToken){ console.warn('sendMsg: no hay idToken'); return; }
+  document.getElementById('input').value='';document.getElementById('send-btn').disabled=true;
+
+  // Solo mostrar el mensaje del usuario si no viene de handleExcelUpload
+  // (que ya agregó el nombre del archivo)
+  if(!text || !text.startsWith('📎')) {
+    addMessage(msg,'user');
+  }
+
+  const loading=addMessage('','bot loading');
+  const lspan=document.createElement('span');lspan.className='loading-dots';lspan.textContent='Consultando datos AWS';loading.appendChild(lspan);
+
+  // ✅ NUEVO: inyectar contexto Excel si existe
+  const msgFinal = _excelContext
+    ? `${_excelContext}\n\nPregunta del usuario: ${msg}`
+    : msg;
+
+  try{
+    const res=await fetchWithAuth(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chat',message:msgFinal,session_id:SESSION_ID})});
+    const data=await res.json();
+    loading.remove();
+    addMessage(data.response,'bot');
+    lastBotMsg=data.response||'';
+
+    const now=new Date().toISOString();
+    historialCompleto.push({role:'user',content:msg,ts:now});
+    historialCompleto.push({role:'assistant',content:data.response,ts:now});
+
+    // ✅ NUEVO: limpiar contexto Excel después del primer uso
+    if(_excelContext){
+      _excelContext = null;
+      _excelFileName = null;
+      const btnExcel = document.getElementById('btn-excel');
+      if(btnExcel){
+        btnExcel.classList.remove('has-file');
+        btnExcel.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Subir Excel`;
+      }
+    }
+  }catch(e){loading.remove();addMessage('Error conectando con la API.','bot');}
+  document.getElementById('send-btn').disabled=false;document.getElementById('input').focus();
+}
+
+function abrirModal(){
+  document.getElementById('modal-email').value=localStorage.getItem('cur_email')||'';
+  if(lastBotMsg&&lastBotMsg.length>15){document.getElementById('modal-ctx').textContent=lastBotMsg.substring(0,140)+(lastBotMsg.length>140?'…':'');document.getElementById('modal-ctx-wrap').style.display='block';}
+  else document.getElementById('modal-ctx-wrap').style.display='none';
+  document.getElementById('modal-status').style.display='none';
+  document.getElementById('modal-note').value='';
+  const btn=document.getElementById('modal-send');btn.disabled=false;btn.textContent='📧 Enviar reporte Excel';btn.style.background='';
+  document.getElementById('modal-overlay').style.display='flex';
+  setTimeout(()=>document.getElementById('modal-email').focus(),120);
+}
+function cerrarModal(){document.getElementById('modal-overlay').style.display='none';}
+document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)cerrarModal();});
+document.getElementById('history-modal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)cerrarHistorialModal();});
+
+async function enviarReporte(){
+  const email=document.getElementById('modal-email').value.trim();
+  const ctx=document.getElementById('modal-ctx').textContent||'';
+  const note=document.getElementById('modal-note').value.trim();
+  const btn=document.getElementById('modal-send');
+  const {start_date,end_date,days}=getReportDates();
+
+  if(!email||!email.includes('@')){mostrarStatus('Ingresa un correo válido.','error');return;}
+  if(!start_date||!end_date){mostrarStatus('⚠️ Selecciona un período en el calendario.','error');return;}
+
+  const diasRango = Math.round((calEnd-calStart)/86400000);
+  if(diasRango < 1){mostrarStatus('⚠️ El rango debe ser de al menos 1 día.','error');return;}
+
+  btn.disabled=true;btn.textContent='⏳ Generando reporte...';btn.style.background='#333';
+  mostrarStatus(`Consultando Athena (${start_date} → ${end_date}) y generando Excel...`,'loading');
+
+  try{
+    const res=await fetchWithAuth(CONFIG.REPORT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,days,start_date,end_date,query_context:ctx,note})
+    });
+    const data=await res.json();
+    console.log('Reporte response:', data);
+    if(res.ok&&data.success){
+      mostrarStatus(`✅ Reporte enviado a ${email}\nPeríodo: ${data.period}\nTotal: $${Number(data.total).toLocaleString('es-PE',{minimumFractionDigits:2})} USD · ${data.services} servicios · ${data.accounts} cuentas`,'success');
+      btn.textContent='✅ Enviado';btn.style.background='#1a6b35';
+      addMessage(`📧 Reporte Excel enviado a ${email}\nPeríodo: ${data.period} | Total: $${Number(data.total).toFixed(2)} USD\nRevisa tu bandeja — incluye 4 hojas: Resumen, Por Cuenta, Tendencia y Alertas.`,'bot');
+      setTimeout(cerrarModal,3500);
+    } else {
+      const errMsg = data.error || data.message || `Error HTTP ${res.status}`;
+      throw new Error(errMsg);
+    }
+  }catch(err){
+    console.error('Error reporte:', err);
+    mostrarStatus(`❌ ${err.message}`,'error');
+    btn.disabled=false;btn.textContent='🔄 Reintentar';btn.style.background='';
+  }
+}
+
+function mostrarStatus(texto,tipo){
+  const el=document.getElementById('modal-status');el.style.display='block';el.textContent=texto;
+  el.style.background=tipo==='success'?'#0b2218':tipo==='error'?'#2a0b0b':'#0a1520';
+  el.style.color=tipo==='success'?'#34d399':tipo==='error'?'#f87171':'#60a5fa';
+  el.style.border=`1px solid ${tipo==='success'?'#1e6b35':tipo==='error'?'#8b1a1a':'#1a4d7a'}`;
+}
+
+function formatTs(iso){if(!iso)return'';try{return new Date(iso).toLocaleString('es-PE',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}catch{return'';}}
+function esc(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function parseMarkdown(text){
+  const escaped = esc(text);
+  const lines   = escaped.split('\n');
+  const result  = [];
+
+  for(let i=0; i<lines.length; i++){
+    let line = lines[i];
+
+    line = line.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+    line = line.replace(/\*(.+?)\*/g,'<em>$1</em>');
+
+    if(line.trim() === ''){
+      const prev = i > 0 ? lines[i-1].trim() : '';
+      const next = i < lines.length-1 ? lines[i+1].trim() : '';
+      if(prev && next){
+        result.push('<span class="md-hr"></span>');
+      }
+      continue;
+    }
+
+    if(/^[-*]{3,}$/.test(line.trim())){
+      result.push('<span class="md-hr"></span>');
+      continue;
+    }
+
+    const secMatch = line.match(/^#{1,6}\s+(.+)$/);
+    if(secMatch){
+      result.push(`<span class="md-section">${secMatch[1]}</span>`);
+      continue;
+    }
+
+    const numMatch = line.match(/^(\d+)\.\s+(.+)$/);
+    if(numMatch){
+      result.push(`<span class="md-row"><span class="md-n">${numMatch[1]}.</span><span class="md-t">${numMatch[2]}</span></span>`);
+      continue;
+    }
+
+    const bulMatch = line.match(/^[-•]\s+(.+)$/);
+    if(bulMatch){
+      result.push(`<span class="md-row"><span class="md-n">•</span><span class="md-t">${bulMatch[1]}</span></span>`);
+      continue;
+    }
+
+    result.push(line);
+  }
+
+  return result.join('<br>')
+    .replace(/<br><span class="md-hr"><\/span><br>/g, '<span class="md-hr"></span>')
+    .replace(/<br><span class="md-section">/g, '<span class="md-section">')
+    .replace(/<br><span class="md-row">/g, '<span class="md-row">');
+}
+
+// ── 📅 DATE RANGE PICKER ─────────────────────────────────────────
+let calOpen     = false;
+let calStart    = null;
+let calEnd      = null;
+let calHover    = null;
+let calSelecting= false;
+let calMonth    = null;
+
+function todayMidnight(){ const t=new Date(); t.setHours(0,0,0,0); return t; }
+
+const MIN_DATE = new Date(2026, 2, 1);
+
+const MNAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DOW    = ['Lu','Ma','Mi','Ju','Vi','Sá','Do'];
+
+(function initCal(){
+  const t = todayMidnight();
+  calMonth = new Date(t.getFullYear(), t.getMonth(), 1);
+  calStart = new Date(MIN_DATE);
+  calEnd   = t;
+
+  const todayEl = document.getElementById('date-range-today');
+  if(todayEl) todayEl.textContent = fmtD(t);
+})();
+
+function toggleCalendar(){
+  const cal = document.getElementById('cal-inline');
+  if(calOpen){
+    cal.style.display = 'none';
+    calOpen = false;
+    document.getElementById('date-range-trigger').style.borderColor='var(--border)';
+  } else {
+    cal.style.display = 'block';
+    calOpen = true;
+    document.getElementById('date-range-trigger').style.borderColor='var(--orange)';
+    document.getElementById('date-range-trigger').style.boxShadow='0 0 0 3px #f9731618';
+    calSelecting = false; calHover = null;
+    renderCal();
+  }
+}
+function closeCalendar(){
+  const cal = document.getElementById('cal-inline');
+  if(cal) cal.style.display='none';
+  calOpen=false;
+  const trg=document.getElementById('date-range-trigger');
+  if(trg){ trg.style.borderColor='var(--border)'; trg.style.boxShadow='none'; }
+}
+
+function renderCal(){
+  const today = todayMidnight();
+  const y = calMonth.getFullYear();
+  const m = calMonth.getMonth();
+  const firstDow = new Date(y,m,1).getDay();
+  const offset   = (firstDow===0) ? 6 : firstDow-1;
+  const dim      = new Date(y,m+1,0).getDate();
+
+  let h = `<div class="cal-month-header">
+    <button class="cal-nav" onclick="calNavMonth(-1)">‹</button>
+    <span class="cal-month-title">${MNAMES[m]} ${y}</span>
+    <button class="cal-nav" onclick="calNavMonth(1)">›</button>
+  </div>
+  <div class="cal-grid" id="cal-grid-main">`;
+
+  DOW.forEach(d => { h += `<div class="cal-dow">${d}</div>`; });
+  for(let i=0; i<offset; i++) h += `<div class="cal-day cal-empty"></div>`;
+
+  for(let d=1; d<=dim; d++){
+    const date  = new Date(y, m, d);
+    const ts    = date.getTime();
+    const isFut = date.getTime() > today.getTime();
+    const isPre = date.getTime() < MIN_DATE.getTime();
+    const isTod = date.getTime() === today.getTime();
+    const isSt  = calStart && date.getTime() === calStart.getTime();
+    const isEn  = calEnd   && date.getTime() === calEnd.getTime();
+    const isIR  = calStart && calEnd && date > calStart && date < calEnd;
+    const isHv  = calSelecting && calHover && calStart &&
+                  date.getTime() > calStart.getTime() &&
+                  date.getTime() <= calHover.getTime();
+
+    let cls = 'cal-day';
+    if(isFut || isPre){
+      cls += isFut ? ' cal-disabled' : ' cal-before-min';
+    } else if(isSt && isEn){ cls += ' cal-start cal-end';
+    } else if(isSt){         cls += ' cal-start';
+    } else if(isEn){         cls += ' cal-end';
+    } else if(isIR || isHv){ cls += ' cal-in-range';
+    }
+    if(isTod) cls += ' cal-today';
+
+    if(!isFut && !isPre){
+      h += `<div class="${cls}" data-ts="${ts}">${d}</div>`;
+    } else {
+      h += `<div class="${cls}">${d}</div>`;
+    }
+  }
+  h += '</div>';
+  document.getElementById('cal-single').innerHTML = h;
+
+  const grid = document.getElementById('cal-grid-main');
+  grid.onclick = function(e){
+    const el = e.target.closest('.cal-day[data-ts]');
+    if(!el) return;
+    calDayClick(parseInt(el.dataset.ts));
+  };
+  grid.onmousemove = function(e){
+    const el = e.target.closest('.cal-day[data-ts]');
+    if(!el || !calSelecting || !calStart) return;
+    const ts = parseInt(el.dataset.ts);
+    if(calHover && calHover.getTime()===ts) return;
+    calHover = new Date(ts);
+    renderCal();
+  };
+
+  updateRangeLabel();
+}
+
+function calNavMonth(dir){
+  const today    = todayMidnight();
+  const minMonth = new Date(MIN_DATE.getFullYear(), MIN_DATE.getMonth(), 1);
+  const maxMonth = new Date(today.getFullYear(), today.getMonth() + 2, 1);
+  const next     = new Date(calMonth.getFullYear(), calMonth.getMonth()+dir, 1);
+  if(next < minMonth || next >= maxMonth) return;
+  calMonth = next;
+  renderCal();
+}
+
+function calDayClick(ts){
+  const date = new Date(ts);
+  const today = todayMidnight();
+  if(date < MIN_DATE || date > today) return;
+
+  const instr = document.getElementById('cal-instruction');
+
+  if(!calSelecting || !calStart){
+    calStart    = date;
+    calEnd      = null;
+    calSelecting= true;
+    calHover    = null;
+    if(instr){ instr.textContent='✅ Inicio seleccionado — ahora elige la fecha fin'; instr.style.color='var(--green)'; }
+  } else {
+    if(date.getTime() < calStart.getTime()){
+      calEnd   = calStart;
+      calStart = date;
+    } else {
+      calEnd = date;
+    }
+    calSelecting = false;
+    calHover     = null;
+    if(instr){ instr.textContent='✅ Rango seleccionado — pulsa Confirmar'; instr.style.color='var(--green)'; }
+  }
+  renderCal();
+}
+
+function updateRangeLabel(){
+  const el = document.getElementById('cal-selected-range');
+  if(!el) return;
+  if(calStart && calEnd){
+    const days = Math.round((calEnd.getTime()-calStart.getTime())/86400000);
+    el.textContent = `${fmtD(calStart)} → ${fmtD(calEnd)}  (${days} día${days!==1?'s':''})`;
+  } else if(calStart && calSelecting){
+    el.textContent = `Inicio: ${fmtD(calStart)} — selecciona fecha fin`;
+  } else {
+    el.textContent = '';
+  }
+}
+
+function fmtD(d){
+  return d.toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+function updateDateLabel(){
+  const el = document.getElementById('date-range-label');
+  if(!el) return;
+  if(calStart && calEnd){
+    el.textContent = `${fmtD(calStart)} → ${fmtD(calEnd)}`;
+  } else {
+    el.textContent = 'Selecciona un período';
+  }
+}
+
+function applyShortcut(val){
+  const today = todayMidnight();
+  calSelecting = false; calHover = null;
+
+  if(val==='week'){
+    const dow = today.getDay();
+    const diff = (dow===0) ? 6 : dow-1;
+    calStart = new Date(today); calStart.setDate(today.getDate()-diff);
+    if(calStart < MIN_DATE) calStart = new Date(MIN_DATE);
+    calEnd = today;
+  } else if(val==='march_half1'){
+    calStart = new Date(2026,2,1);  calEnd = new Date(2026,2,15);
+    if(calEnd > today) calEnd = today;
+  } else if(val==='march_half2'){
+    calStart = new Date(2026,2,16); calEnd = new Date(2026,2,31);
+    if(calEnd > today) calEnd = today;
+  } else if(val==='march_full'){
+    calStart = new Date(2026,2,1);  calEnd = new Date(2026,2,31);
+    if(calEnd > today) calEnd = today;
+  } else if(val==='all'){
+    calStart = new Date(MIN_DATE);  calEnd = today;
+  }
+
+  calMonth = new Date(calStart.getFullYear(), calStart.getMonth(), 1);
+
+  document.querySelectorAll('.cal-shortcut').forEach(b=>b.classList.remove('active'));
+  if(event && event.target) event.target.classList.add('active');
+
+  updateDateLabel();
+  if(calOpen) renderCal();
+}
+
+function applyCalendar(){
+  if(!calStart || !calEnd){
+    const instr = document.getElementById('cal-instruction');
+    if(instr){ instr.textContent='⚠️ Selecciona inicio y fin antes de confirmar'; instr.style.color='var(--red)'; }
+    return;
+  }
+  const trg = document.getElementById('date-range-trigger');
+  if(trg){ trg.style.borderColor='var(--green)'; trg.style.boxShadow='0 0 0 3px #34d39920'; }
+  setTimeout(()=>{
+    if(trg){ trg.style.borderColor='var(--border)'; trg.style.boxShadow='none'; }
+  }, 1500);
+  closeCalendar();
+}
+
+function getReportDates(){
+  if(calStart && calEnd){
+    const fmt = d => d.toISOString().split('T')[0];
+    return { start_date:fmt(calStart), end_date:fmt(calEnd),
+             days: Math.round((calEnd.getTime()-calStart.getTime())/86400000) };
+  }
+  return { days:30 };
+}
+</script>
+</body>
+</html>
