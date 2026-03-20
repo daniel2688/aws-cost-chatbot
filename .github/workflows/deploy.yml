@@ -21,9 +21,9 @@ jobs:
 
       - name: Inyectar variables en index.html
         run: |
-          sed -i "s|YOUR_COGNITO_USER_POOL_ID|${{ vars.COGNITO_USER_POOL_ID }}|g" src/frontend/index.html
-          sed -i "s|YOUR_COGNITO_CLIENT_ID|${{ vars.COGNITO_CLIENT_ID }}|g" src/frontend/index.html
-          sed -i "s|YOUR_API_ID|${{ vars.API_GATEWAY_ID }}|g" src/frontend/index.html
+          sed -i "s|COGNITO_USER_POOL_ID|${{ vars.COGNITO_USER_POOL_ID }}|g" src/frontend/index.html
+          sed -i "s|COGNITO_CLIENT_ID|${{ vars.COGNITO_CLIENT_ID }}|g" src/frontend/index.html
+          sed -i "s|API_GATEWAY_ID|${{ vars.API_GATEWAY_ID }}|g" src/frontend/index.html
 
       - name: Upload index.html to S3
         run: |
