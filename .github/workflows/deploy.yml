@@ -11,19 +11,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region:            us-east-1
+
+      - name: Inyectar variables en index.html
+        run: |
+          sed -i "s|YOUR_COGNITO_USER_POOL_ID|${{ vars.COGNITO_USER_POOL_ID }}|g" src/frontend/index.html
+          sed -i "s|YOUR_COGNITO_CLIENT_ID|${{ vars.COGNITO_CLIENT_ID }}|g" src/frontend/index.html
+          sed -i "s|YOUR_API_ID|${{ vars.API_GATEWAY_ID }}|g" src/frontend/index.html
+
       - name: Upload index.html to S3
         run: |
-          aws s3 cp src/frontend/index.html s3://${{ secrets.FRONTEND_BUCKET }}/ \
+          aws s3 cp src/frontend/index.html s3://${{ vars.FRONTEND_BUCKET }}/ \
             --content-type "text/html" \
             --cache-control "no-cache, no-store, must-revalidate"
+
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
