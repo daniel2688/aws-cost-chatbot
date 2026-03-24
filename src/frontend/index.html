@@ -262,6 +262,10 @@
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         Historial
       </button>
+      <button class="hdr-btn" onclick="limpiarPantalla()" title="Limpiar pantalla">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        Limpiar
+      </button>
       <button class="hdr-btn" id="clear-btn" onclick="confirmarLimpiar()" title="Borrar historial">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6m4-6v6"/></svg>
       </button>
@@ -750,6 +754,16 @@ function reutilizarConsulta(t){
   setTimeout(()=>sendMsg(t), 150);
 }
 
+function limpiarPantalla(){
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = `
+    <div class="msg bot">
+      <div class="bot-prefix">
+        <div class="bot-prefix-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <span class="bot-prefix-label">FinOps Agent</span>
+      </div>¡Hola! Soy tu asistente de costos AWS. Tengo acceso a los datos reales de tu organización. ¿Qué quieres saber?
+    </div>`;
+}
 async function confirmarLimpiar(){
   if(!confirm('¿Borrar todo el historial de consultas? Esta acción no se puede deshacer.'))return;
   try{await fetchWithAuth(CONFIG.API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'clear_history'})});historialCompleto=[];document.getElementById('history-banner').classList.add('hidden');addMessage('🗑 Historial borrado correctamente.','system');}
