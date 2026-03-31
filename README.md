@@ -271,8 +271,8 @@ aws cloudfront create-invalidation --distribution-id <DIST_ID> --paths "/*"
 
 El sistema usa **Amazon Cognito** con flujo `USER_PASSWORD_AUTH`:
 
-- User Pool: `us-east-1_koWyGhMTX`
-- Client ID: `9bk0lu8ablftqsbojch52qfhv` (público por diseño de SPA)
+- User Pool: `COGNITO_USER_POOL_ID`
+- Client ID: `COGNITO_CLIENT_ID` (público por diseño de SPA)
 - Token de sesión: **60 minutos** con timer visible en la UI
 - Refresh Token: 5 días (renovación automática)
 - Primer login: fuerza cambio de contraseña (`NEW_PASSWORD_REQUIRED`)

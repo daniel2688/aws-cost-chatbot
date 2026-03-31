@@ -9,8 +9,8 @@
         "bedrock:InvokeModel"
       ],
       "Resource": [
-        "arn:aws:bedrock:us-east-1::agent/LDJKO1JVKY",
-        "arn:aws:bedrock:us-east-1::agent-alias/LDJKO1JVKY/QJONGN6CNC"
+        "arn:aws:bedrock:us-east-1::agent/BEDROCK_AGENT_ID",
+        "arn:aws:bedrock:us-east-1::agent-alias/BEDROCK_AGENT_ID/BEDROCK_AGENT_ALIAS"
       ]
     },
     {

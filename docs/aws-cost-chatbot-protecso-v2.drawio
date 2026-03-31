@@ -43,7 +43,7 @@
         <mxCell id="cognito" parent="lane_frontend" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cognito;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Amazon Cognito" vertex="1">
           <mxGeometry height="64" width="64" x="760" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="cog_detail" parent="lane_frontend" style="text;html=1;align=center;fontSize=9;fontColor=#1A5276;whiteSpace=wrap;" value="&lt;b&gt;protecso-cur-chat&lt;/b&gt;&lt;br&gt;Pool: us-east-1_koWyGhMTX&lt;br&gt;Flujo: USER_PASSWORD_AUTH&lt;br&gt;Retorna: JWT Bearer token" vertex="1">
+        <mxCell id="cog_detail" parent="lane_frontend" style="text;html=1;align=center;fontSize=9;fontColor=#1A5276;whiteSpace=wrap;" value="&lt;b&gt;protecso-cur-chat&lt;/b&gt;&lt;br&gt;Pool: COGNITO_USER_POOL_ID&lt;br&gt;Flujo: USER_PASSWORD_AUTH&lt;br&gt;Retorna: JWT Bearer token" vertex="1">
           <mxGeometry height="58" width="156" x="714" y="128" as="geometry" />
         </mxCell>
         <mxCell id="apigw" parent="lane_frontend" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="API Gateway" vertex="1">
@@ -87,7 +87,7 @@
         <mxCell id="bedrock" parent="lane_chat" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Bedrock Agent" vertex="1">
           <mxGeometry height="64" width="64" x="820" y="80" as="geometry" />
         </mxCell>
-        <mxCell id="bed_detail" parent="lane_chat" style="text;html=1;align=center;fontSize=9;fontColor=#7D6608;whiteSpace=wrap;" value="&lt;b&gt;protecso-cur-agent&lt;/b&gt;&lt;br&gt;Agent ID: LDJKO1JVKY&lt;br&gt;Alias prod: QJONGN6CNC&lt;br&gt;Modelo: Claude Sonnet&lt;br&gt;Orquesta el Action Group" vertex="1">
+        <mxCell id="bed_detail" parent="lane_chat" style="text;html=1;align=center;fontSize=9;fontColor=#7D6608;whiteSpace=wrap;" value="&lt;b&gt;protecso-cur-agent&lt;/b&gt;&lt;br&gt;Agent ID: BEDROCK_AGENT_ID&lt;br&gt;Alias prod: BEDROCK_AGENT_ALIAS&lt;br&gt;Modelo: Claude Sonnet&lt;br&gt;Orquesta el Action Group" vertex="1">
           <mxGeometry height="72" width="164" x="770" y="150" as="geometry" />
         </mxCell>
         <mxCell id="lambda2" parent="lane_chat" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;labelBackgroundColor=none;sketch=0;fontStyle=1;fontSize=11;" value="Lambda 2" vertex="1">
@@ -242,13 +242,13 @@
         <mxCell id="leg_ids" parent="1" style="text;html=1;fontSize=11;align=left;fontColor=#7D6608;" value="&lt;b&gt;IDs de Producción&lt;/b&gt;" vertex="1">
           <mxGeometry height="20" width="460" x="1640" y="1120" as="geometry" />
         </mxCell>
-        <mxCell id="leg_id1" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="Bedrock Agent ID:    LDJKO1JVKY" vertex="1">
+        <mxCell id="leg_id1" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="Bedrock Agent ID:    BEDROCK_AGENT_ID" vertex="1">
           <mxGeometry height="18" width="460" x="1640" y="1142" as="geometry" />
         </mxCell>
-        <mxCell id="leg_id2" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="Alias prod:              QJONGN6CNC" vertex="1">
+        <mxCell id="leg_id2" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="Alias prod:              BEDROCK_AGENT_ALIAS" vertex="1">
           <mxGeometry height="18" width="460" x="1640" y="1162" as="geometry" />
         </mxCell>
-        <mxCell id="leg_id3" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="Cognito Pool:           us-east-1_koWyGhMTX" vertex="1">
+        <mxCell id="leg_id3" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="Cognito Pool:           COGNITO_USER_POOL_ID" vertex="1">
           <mxGeometry height="18" width="460" x="1640" y="1182" as="geometry" />
         </mxCell>
         <mxCell id="leg_id4" parent="1" style="text;html=1;fontSize=10;align=left;fontFamily=Courier New;" value="CUR Bucket ID:       989663408506" vertex="1">

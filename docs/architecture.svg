@@ -53,8 +53,8 @@
 <text class="ts" x="270" y="279" text-anchor="middle" fill="#633806">max 200/usuario</text>
 <rect x="376" y="212" width="130" height="80" rx="6" fill="#FAC775" stroke="#BA7517" stroke-width="0.5"/>
 <text class="th" x="441" y="232" text-anchor="middle" fill="#412402">Bedrock Agent</text>
-<text class="ts" x="441" y="249" text-anchor="middle" fill="#633806">LDJKO1JVKY</text>
-<text class="ts" x="441" y="264" text-anchor="middle" fill="#633806">alias: QJONGN6CNC</text>
+<text class="ts" x="441" y="249" text-anchor="middle" fill="#633806">BEDROCK_AGENT_ID</text>
+<text class="ts" x="441" y="264" text-anchor="middle" fill="#633806">alias: BEDROCK_AGENT_ALIAS</text>
 <text class="ts" x="441" y="279" text-anchor="middle" fill="#633806">Claude Sonnet</text>
 <rect x="548" y="212" width="96" height="80" rx="6" fill="#FAC775" stroke="#BA7517" stroke-width="0.5"/>
 <text class="th" x="596" y="232" text-anchor="middle" fill="#412402">Lambda</text>
@@ -140,7 +140,7 @@
 <!-- LEYENDA -->
 <rect x="20" y="812" width="640" height="88" rx="8" fill="none" stroke="#D3D1C7" stroke-width="0.5"/>
 <text class="th" x="36" y="832" fill="#2C2C2A">Referencia tecnica — Protecso · us-east-1 · v1.1.0</text>
-<text class="ts" x="36" y="850" fill="#5F5E5A">Bedrock Agent: LDJKO1JVKY · Alias prod: QJONGN6CNC · Cognito Pool: us-east-1_koWyGhMTX</text>
+<text class="ts" x="36" y="850" fill="#5F5E5A">Bedrock Agent: BEDROCK_AGENT_ID · Alias prod: BEDROCK_AGENT_ALIAS · Cognito Pool: COGNITO_USER_POOL_ID</text>
 <text class="ts" x="36" y="866" fill="#5F5E5A">CUR bucket: aws-cur2-cost-exports-989663408506 · Athena DB: aws_costs · tabla: data</text>
 <text class="ts" x="36" y="882" fill="#5F5E5A">SES from: daniel.cordero@protecso.com.pe · Runtime: Python 3.12 · Layer: openpyxl-python312:1</text>
 </svg>
