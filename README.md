@@ -97,7 +97,7 @@ Y recibir un **reporte Excel profesional por email** con un solo clic — sin ne
 
 > 📐 Ver arquitectura detallada en [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
-![Arquitectura AWS Cost Chatbot](docs/architecture.png)
+![Arquitectura AWS Cost Chatbot](docs/architecture.svg)
 
 ---
 
