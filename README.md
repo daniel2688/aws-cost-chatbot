@@ -95,7 +95,6 @@ Y recibir un **reporte Excel profesional por email** con un solo clic — sin ne
 └─────────────────┘
 ```
 
-> 📐 Ver arquitectura detallada en [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
 ![Arquitectura AWS Cost Chatbot](docs/architecture.svg)
 
@@ -108,8 +107,6 @@ aws-cost-chatbot/
 ├── README.md                    ← Este archivo
 ├── CHANGELOG.md                 ← Historial de versiones
 ├── docs/
-│   ├── ARCHITECTURE.md          ← Arquitectura detallada + diagramas
-│   ├── DEPLOYMENT.md            ← Guía de despliegue completa
 │   ├── bedrock-agent-setup.md   ← Cómo configurar el Bedrock Agent
 │   └── athena-setup.md          ← Configuración CUR + Athena
 ├── src/

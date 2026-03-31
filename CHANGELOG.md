@@ -5,7 +5,6 @@ Basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/) · [Semantic 
 ## [Unreleased]
 
 ### Planned
-- GitHub Actions CI/CD para deploy automático de Lambdas
 - Terraform para reproducir infraestructura completa
 - Soporte multi-región
 
